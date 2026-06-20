@@ -1,198 +1,181 @@
-"use client";
+"use client"
+import React, { useState } from 'react';
+import { Button } from '@heroui/react';
+import { Check, Xmark, CrownDiamond, ShieldCheck, Star, CirclePlus } from '@gravity-ui/icons';
 
-import React, { useState } from "react";
-import { authClient } from "@/lib/auth-client";
-import {
-     Table,
-     TableHeader,
-     TableColumn,
-     TableBody,
-     TableRow,
-     TableCell,
-     Button,
-     Card,
-     Badge,
-     Chip
-} from "@heroui/react";
-import { Sparkles } from "@gravity-ui/icons/Sparkles";
-import { Check } from "@gravity-ui/icons/Check";
-import { Xmark } from "@gravity-ui/icons/Xmark";
-import { CrownDiamond } from "@gravity-ui/icons/Crown";
-import toast from "react-hot-toast";
-
-export default function PricingPage() {
-     const { data: sessionData, isPending } = authClient.useSession();
+const PricingPage = () => {
      const [loading, setLoading] = useState(false);
 
-     const isLoggedIn = !!sessionData?.session;
-     const isPremium = sessionData?.user?.plan === "premium";
-
      const handleUpgrade = async () => {
-          if (!isLoggedIn) {
-               toast.error("Please login first to upgrade!");
-               return;
-          }
-
+          setLoading(true);
           try {
-               setLoading(true);
-               const res = await fetch("/api/payment/create-checkout-session", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
+               const response = await fetch('/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                         'Content-Type': 'application/json',
+                    },
                });
 
-               const data = await res.json();
+               const data = await response.json();
 
-               if (data?.url) {
+               if (data.url) {
                     window.location.href = data.url;
                } else {
-                    throw new Error("Failed to get checkout session URL");
+                    console.error('Stripe session creation failed');
+                    setLoading(false);
                }
           } catch (error) {
-               console.error("Stripe Checkout Error:", error);
-               toast.error("Something went wrong with Stripe! Try again.");
-          } finally {
+               console.error('Error initiating payment:', error);
                setLoading(false);
           }
      };
 
      const comparisonFeatures = [
-          { key: "1", name: "Create Public Lessons", free: "Up to 5", premium: "Unlimited" },
-          { key: "2", name: "Create Premium Lessons", free: false, premium: true },
-          { key: "3", name: "Ad-free Experience", free: false, premium: true },
-          { key: "4", name: "Priority Search Listing", free: false, premium: true },
-          { key: "5", name: "Access to Others' Premium Content", free: false, premium: true },
-          { key: "6", name: "Exclusive Profile Badge", free: "Standard", premium: "Premium ⭐" },
-          { key: "7", name: "Advanced Insights & Analytics", free: false, premium: true },
-          { key: "8", name: "24/7 Priority Support", free: false, premium: true },
+          { name: 'Number of lessons that can be created', free: 'Up to 5 Lessons', premium: 'Unlimited Lessons', highlight: true },
+          { name: 'Premium lesson creation access', free: false, premium: true },
+          { name: 'Ad-free experience', free: false, premium: true },
+          { name: 'Priority listing in public lessons', free: false, premium: true },
+          { name: 'Access to premium content from other users', free: false, premium: true },
+          { name: 'Community badge / verified status', free: false, premium: true },
+          { name: 'Advanced analytics & insights', free: false, premium: true },
+          { name: '24/7 Dedicated Support', free: false, premium: true },
      ];
 
      return (
-          <main className="relative min-h-screen bg-[#09090b] text-white pt-28 pb-20 px-4 overflow-hidden">
+          <div className="min-h-screen bg-[#0B0F19] text-slate-100 py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden dark">
+               {/* Background Ambient Glows */}
+               <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[120px] pointer-events-none" />
+               <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-900/20 rounded-full blur-[140px] pointer-events-none" />
 
-               {/* 🔮 Cyber Ambient Glows */}
-               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none" />
-               <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
+               <div className="max-w-6xl mx-auto space-y-16">
 
-               <div className="max-w-4xl mx-auto relative z-10 space-y-16">
-
-                    {/* 👑 Section Header */}
+                    {/* Header Section */}
                     <div className="text-center space-y-4">
-                         <Chip
-                              variant="faded"
-                              color="secondary"
-                              className="border-purple-500/30 bg-purple-500/10 font-mono text-xs uppercase tracking-widest text-purple-300 px-3"
-                         >
-                              <span className="flex items-center gap-1.5">
-                                   <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                                   Pricing Plans
-                              </span>
-                         </Chip>
-                         <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-none">
-                              Upgrade Your <span className="bg-gradient-to-r from-purple-400 via-indigo-400 to-pink-400 bg-clip-text text-transparent">Wisdom Journey</span>
+                         <div className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-1.5 rounded-full text-indigo-400 text-sm font-medium backdrop-blur-md">
+                              <Star size={14} /> Level Up Your Teaching & Learning
+                         </div>
+                         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+                              Choose the Perfect Plan
                          </h1>
-                         <p className="text-neutral-400 max-w-xl mx-auto text-sm sm:text-base font-light">
-                              Unlock unlimited potential, premium life lessons, and stand out in the community with lifetime access.
+                         <p className="text-slate-400 max-w-xl mx-auto text-base md:text-lg">
+                              Get lifetime access to premium features with a simple one-time investment. No subscriptions, no hidden fees.
                          </p>
                     </div>
 
-                    <div className="max-w-sm mx-auto">
-                         <Badge content="LIFETIME" color="warning" size="sm" variant="flat" className="font-bold tracking-wider">
-                              <Card
-                                   className="border-1 border-purple-500/30 bg-[#0c0c0e]/70 backdrop-blur-md p-8 flex flex-col items-center text-center shadow-2xl shadow-purple-950/20 space-y-5"
-                                   radius="lg"
+                    {/* Upper Layout: Balanced Price Card & Perks Panel */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+
+                         {/* Left Side: Premium Checkout Block */}
+                         <div className="lg:col-span-5 flex flex-col justify-between bg-linear-to-b from-slate-900 via-[#131926] to-[#131926] border border-indigo-500/30 rounded-3xl p-8 relative shadow-[0_0_50px_-12px_rgba(99,102,241,0.3)] backdrop-blur-xl">
+                              <div className="absolute top-0 transform -translate-y-1/2 translate-x-2/3  bg-linear-to-r from-indigo-500 to-purple-500 text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full text-white shadow-lg flex items-center gap-1.5">
+                                   <CrownDiamond size={12} /> Lifetime Value
+                              </div>
+
+                              <div>
+                                   <div className="flex items-center justify-between mb-4">
+                                        <span className="text-indigo-400 font-semibold tracking-wider text-sm uppercase">Premium Access</span>
+                                        <span className="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-md font-medium">One-Time Pay</span>
+                                   </div>
+
+                                   <div className="flex items-baseline gap-2 mb-6">
+                                        <span className="text-5xl font-black tracking-tight text-white">৳1,500</span>
+                                        <span className="text-slate-400 text-sm">/ forever</span>
+                                   </div>
+                                   <p className="text-slate-300 text-sm leading-relaxed mb-8">
+                                        Unlock full access to the entire platform suite. Empower your creation workflow without boundaries.
+                                   </p>
+                              </div>
+
+                              {/* HeroUI Button Integration */}
+                              <Button
+                                   onPress={handleUpgrade}
+                                   isLoading={loading}
+                                   className="w-full bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold h-14 rounded-2xl shadow-[0_4px_20px_rgba(99,102,241,0.4)]"
+                                   endContent={!loading && <CirclePlus size={18} />}
                               >
-                                   <div className="p-3 bg-gradient-to-tr from-purple-600/20 to-indigo-600/20 rounded-2xl border border-purple-500/30 text-purple-400">
-                                        <CrownDiamond className="w-8 h-8 drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]" />
-                                   </div>
+                                   Upgrade to Premium
+                              </Button>
+                         </div>
 
-                                   <div className="space-y-1">
-                                        <h3 className="text-2xl font-extrabold text-white tracking-tight">Premium Plan</h3>
-                                        <p className="text-xs text-neutral-400 font-light">One-time commitment. Infinite value.</p>
-                                   </div>
-
-                                   <div className="py-2">
-                                        <span className="text-5xl font-black text-white tracking-tighter">৳1,500</span>
-                                        <span className="text-neutral-500 text-xs font-mono block mt-1">/ permanent access</span>
-                                   </div>
-
-                                   {/* Action Button */}
-                                   {isPending ? (
-                                        <Button isLoading className="w-full font-bold" variant="flat" color="secondary" radius="md">Loading</Button>
-                                   ) : isPremium ? (
-                                        <Button
-                                             disabled
-                                             className="w-full font-bold bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400 border-1 border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.15)]"
-                                             variant="bordered"
-                                             radius="md"
-                                        >
-                                             Premium Member ⭐
-                                        </Button>
-                                   ) : (
-                                        <Button
-                                             isLoading={loading}
-                                             onClick={handleUpgrade}
-                                             className="w-full font-bold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40"
-                                             radius="md"
-                                             size="lg"
-                                        >
-                                             {loading ? "Processing..." : "Upgrade to Premium"}
-                                        </Button>
-                                   )}
-                                   <p className="text-[10px] text-neutral-500 font-mono !mt-4">Secured by Stripe Test Mode</p>
-                              </Card>
-                         </Badge>
+                         {/* Right Side: Extra balancing section layout */}
+                         <div className="lg:col-span-7 bg-slate-900/40 border border-slate-800 rounded-3xl p-8 flex flex-col justify-center backdrop-blur-md">
+                              <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-2">
+                                   <ShieldCheck className="text-indigo-400" /> Why go Premium?
+                              </h3>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                   {[
+                                        "Unlimited lesson structures",
+                                        "Priority cloud rendering",
+                                        "Advanced creator dashboard",
+                                        "Verified profile checkmark",
+                                        "Zero third-party popups",
+                                        "Exclusive community server",
+                                   ].map((perk, idx) => (
+                                        <div key={idx} className="flex items-start gap-3">
+                                             <div className="mt-1 p-0.5 bg-indigo-500/10 border border-indigo-500/30 rounded-md text-indigo-400">
+                                                  <Check size={14} />
+                                             </div>
+                                             <span className="text-slate-300 text-sm font-medium">{perk}</span>
+                                        </div>
+                                   ))}
+                              </div>
+                         </div>
                     </div>
 
-                    {/* 📊 HeroUI Table */}
-                    <div className="space-y-6 pt-6">
-                         <h2 className="text-xl sm:text-2xl font-extrabold text-center tracking-tight text-neutral-200">
-                              Compare features at a glance
-                         </h2>
+                    {/* Lower Layout: Structured Comparison Table */}
+                    <div className="space-y-6">
+                         <div className="text-center lg:text-left">
+                              <h2 className="text-2xl font-bold text-white tracking-tight">Compare Plans Side-by-Side</h2>
+                              <p className="text-slate-400 text-sm mt-1">See exactly what you unlock with your premium upgrade.</p>
+                         </div>
 
-                         <Table
-                              aria-label="Plan comparison table"
-                              className="border border-neutral-800/60 rounded-2xl"
-                              removeWrapper
-                              shadow="none"
-                         >
-                              <TableHeader>
-                                   <TableColumn className="bg-neutral-900/60 text-neutral-400 font-mono text-xs uppercase p-4">FEATURES</TableColumn>
-                                   <TableColumn className="bg-neutral-900/60 text-neutral-400 font-mono text-xs uppercase text-center p-4">FREE PLAN</TableColumn>
-                                   <TableColumn className="bg-neutral-900/60 text-purple-400 font-mono text-xs uppercase text-center p-4">PREMIUM PLAN</TableColumn>
-                              </TableHeader>
-                              <TableBody className="divide-y divide-neutral-800/40">
-                                   {comparisonFeatures.map((row) => (
-                                        <TableRow key={row.key} className="border-b border-neutral-800/40 hover:bg-neutral-900/30 transition-colors">
-                                             <TableCell className="p-4 font-medium text-neutral-300 text-sm">{row.name}</TableCell>
-
-                                             <TableCell className="p-4 text-center text-neutral-400 text-sm">
-                                                  {typeof row.free === "boolean" ? (
-                                                       row.free ? <Check className="w-5 h-5 mx-auto text-emerald-500" /> : <Xmark className="w-5 h-5 mx-auto text-neutral-600" />
-                                                  ) : (
-                                                       <Chip size="sm" variant="flat" color="default" className="text-neutral-400 bg-neutral-900">{row.free}</Chip>
-                                                  )}
-                                             </TableCell>
-
-                                             <TableCell className="p-4 text-center font-semibold text-purple-400 text-sm">
-                                                  {typeof row.premium === "boolean" ? (
-                                                       row.premium ? (
-                                                            <Check className="w-5 h-5 mx-auto text-purple-400 drop-shadow-[0_0_10px_rgba(168,85,247,0.6)]" />
+                         <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-[#111622]/60 backdrop-blur-md shadow-2xl">
+                              <table className="w-full text-left border-collapse">
+                                   <thead>
+                                        <tr className="border-b border-slate-800 bg-slate-900/60">
+                                             <th className="p-5 text-sm font-semibold text-slate-300 w-[50%]">Features</th>
+                                             <th className="p-5 text-sm font-semibold text-slate-400 text-center w-[25%]">Free</th>
+                                             <th className="p-5 text-sm font-semibold text-indigo-400 text-center w-[25%] bg-indigo-500/5">
+                                                  <span className="flex items-center justify-center gap-1.5">
+                                                       <CrownDiamond size={14} /> Premium
+                                                  </span>
+                                             </th>
+                                        </tr>
+                                   </thead>
+                                   <tbody className="divide-y divide-slate-800/60">
+                                        {comparisonFeatures.map((row, index) => (
+                                             <tr key={index} className="hover:bg-slate-900/30 transition-colors">
+                                                  <td className="p-5 text-sm font-medium text-slate-300">
+                                                       {row.name}
+                                                  </td>
+                                                  <td className="p-5 text-center text-sm text-slate-400">
+                                                       {typeof row.free === 'string' ? (
+                                                            <span className="font-medium text-slate-400">{row.free}</span>
+                                                       ) : row.free ? (
+                                                            <Check size={18} className="mx-auto text-emerald-400" />
                                                        ) : (
-                                                            <Xmark className="w-5 h-5 mx-auto text-neutral-600" />
-                                                       )
-                                                  ) : (
-                                                       <Chip size="sm" variant="dot" color="secondary" className="border-purple-500/30 text-purple-300 font-semibold">
-                                                            {row.premium}
-                                                       </Chip>
-                                                  )}
-                                             </TableCell>
-                                        </TableRow>
-                                   ))}
-                              </TableBody>
-                         </Table>
+                                                            <Xmark size={18} className="mx-auto text-slate-600" />
+                                                       )}
+                                                  </td>
+                                                  <td className={`p-5 text-center text-sm font-medium bg-indigo-500/[0.02] ${row.highlight ? 'text-indigo-300' : 'text-slate-200'}`}>
+                                                       {typeof row.premium === 'string' ? (
+                                                            <span className="font-semibold text-indigo-400">{row.premium}</span>
+                                                       ) : row.premium ? (
+                                                            <Check size={18} className="mx-auto text-indigo-400" />
+                                                       ) : (
+                                                            <Xmark size={18} className="mx-auto text-slate-600" />
+                                                       )}
+                                                  </td>
+                                             </tr>
+                                        ))}
+                                   </tbody>
+                              </table>
+                         </div>
                     </div>
 
                </div>
-          </main>
+          </div>
      );
-}
+};
+
+export default PricingPage;

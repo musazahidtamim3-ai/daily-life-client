@@ -1,0 +1,122 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { Spinner } from "@heroui/react";
+import { Flame, MagnifierPlus } from "@gravity-ui/icons";
+import { authClient } from "@/lib/auth-client";
+import { getLessons } from "@/lib/actions/get/lessons";
+import { LessonCard } from "../components/LessonCard";
+
+
+export default function LessonsPage() {
+     const [lessons, setLessons] = useState([]);
+     const [loading, setLoading] = useState(true);
+
+     const { data: sessionData } = authClient.useSession();
+     const user = sessionData?.user;
+
+     useEffect(() => {
+          async function loadLessons() {
+               try {
+                    const data = await getLessons();
+                    const fallbackData = Array.isArray(data) ? data : data ? [data] : [];
+                    setLessons(fallbackData);
+               } catch (err) {
+                    console.error(err);
+               } finally {
+                    setLoading(false);
+               }
+          }
+          loadLessons();
+     }, []);
+
+     return (
+          <div className="w-full min-h-screen bg-[#070709] text-white px-6 md:px-16 py-12">
+
+               {/* Header */}
+               <div className="flex flex-col items-center text-center mb-12 space-y-3">
+                    <div className="flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 px-3 py-1 rounded-full text-xs font-semibold text-purple-400 shadow-lg shadow-purple-500/5">
+                         <Flame className="w-3.5 h-3.5 text-purple-400 animate-pulse" /> Knowledge Hub
+                    </div>
+                    <h1 className="text-3xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-500 bg-clip-text text-transparent">
+                         Explore Public Life Lessons
+                    </h1>
+                    <p className="text-neutral-400 text-xs font-light">
+                         Real-world knowledge, wisdom, and core life reflections.
+                    </p>
+               </div>
+
+               {/* Search + Selects */}
+               <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-10 bg-[#0c0c10]/40 border border-neutral-900 p-4 rounded-2xl backdrop-blur-md">
+
+                    {/* Search */}
+                    <div className="space-y-1.5 w-full">
+                         <label className="text-xs font-semibold text-neutral-400">Search</label>
+                         <div className="relative flex items-center">
+                              <MagnifierPlus className="absolute left-4 text-neutral-500 w-4 h-4 pointer-events-none" />
+                              <input
+                                   type="text"
+                                   placeholder="Search lessons..."
+                                   className="w-full h-11 bg-[#0c0c0e] border border-neutral-800 hover:border-neutral-700 focus:border-purple-500/50 focus:outline-none rounded-xl pl-11 pr-4 text-sm text-white placeholder:text-neutral-500 transition-all"
+                              />
+                         </div>
+                    </div>
+
+                    {/* Category Select */}
+                    <div className="space-y-1.5 w-full">
+                         <label className="text-xs font-semibold text-neutral-400">Category</label>
+                         <select
+                              defaultValue=""
+                              className="w-full h-11 bg-[#0c0c0e] border border-neutral-800 hover:border-neutral-700 focus:border-purple-500/50 focus:outline-none rounded-xl px-4 text-sm text-neutral-400 transition-all appearance-none cursor-pointer"
+                              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center" }}
+                         >
+                              <option value="" disabled className="text-neutral-500 bg-[#0c0c0e]">Select Category</option>
+                              <option value="Career" className="text-white bg-[#0c0c0e]">Career</option>
+                              <option value="Realization" className="text-white bg-[#0c0c0e]">Realization</option>
+                              <option value="Life" className="text-white bg-[#0c0c0e]">Life</option>
+                              <option value="Tech" className="text-white bg-[#0c0c0e]">Tech</option>
+                         </select>
+                    </div>
+
+                    {/* Emotional Tone Select */}
+                    <div className="space-y-1.5 w-full">
+                         <label className="text-xs font-semibold text-neutral-400">Emotional Tone</label>
+                         <select
+                              defaultValue=""
+                              className="w-full h-11 bg-[#0c0c0e] border border-neutral-800 hover:border-neutral-700 focus:border-purple-500/50 focus:outline-none rounded-xl px-4 text-sm text-neutral-400 transition-all appearance-none cursor-pointer"
+                              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center" }}
+                         >
+                              <option value="" disabled className="text-neutral-500 bg-[#0c0c0e]">Select Emotional Tone</option>
+                              <option value="Realization" className="text-white bg-[#0c0c0e]">Realization</option>
+                              <option value="Motivation" className="text-white bg-[#0c0c0e]">Motivation</option>
+                              <option value="Inspirational" className="text-white bg-[#0c0c0e]">Inspirational</option>
+                              <option value="Sad" className="text-white bg-[#0c0c0e]">Sad</option>
+                         </select>
+                    </div>
+
+               </div>
+
+               {/* Loader / Grid / Empty */}
+               {loading ? (
+                    <div className="w-full flex flex-col items-center justify-center py-24 gap-3">
+                         <Spinner color="purple" size="lg" />
+                         <p className="text-xs text-neutral-500 font-light tracking-wider animate-pulse">Loading lessons...</p>
+                    </div>
+               ) : lessons.length > 0 ? (
+                    <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                         {lessons.map((singleLesson) => (
+                              <LessonCard
+                                   key={singleLesson._id?.$oid || singleLesson._id}
+                                   lesson={singleLesson}
+                                   user={user}
+                              />
+                         ))}
+                    </div>
+               ) : (
+                    <div className="text-center py-20 text-neutral-500 text-sm font-light">
+                         No lessons found.
+                    </div>
+               )}
+          </div>
+     );
+}
