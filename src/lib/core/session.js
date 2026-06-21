@@ -1,18 +1,31 @@
-"use server";
-import { headers } from "next/headers";
-import { auth } from "../auth"; 
+import { headers, cookies } from "next/headers";
 
 export const getUserSession = async () => {
      try {
           const nextHeaders = await headers();
+          const nextCookies = await cookies();
 
-          const session = await auth.api.getSession({
-               headers: nextHeaders
+          const cookieString = nextCookies.toString();
+
+          if (!cookieString) return null;
+
+          const response = await fetch(`http://localhost:5000/api/auth/get-session`, {
+               method: "GET",
+               headers: {
+                    ...Object.fromEntries(nextHeaders.entries()),
+                    "cookie": cookieString 
+               },
+               cache: "no-store"
           });
 
-          return session?.user || null;
+          if (!response.ok) return null;
+
+          const sessionData = await response.json();
+
+          return sessionData?.data?.user || sessionData?.user || null;
+
      } catch (error) {
-          console.error("Auth Session Error:", error);
+          console.error(" Route Handler Session Fetch Error:", error.message);
           return null;
      }
 };

@@ -4,6 +4,7 @@ import React from "react";
 import { Card, CardHeader, Avatar, Button, Chip } from "@heroui/react";
 import { Lock, Eye, Calendar } from "@gravity-ui/icons";
 import Image from "next/image";
+import Link from "next/link";
 
 export function LessonCard({ lesson, user }) {
      if (!lesson) return null;
@@ -82,14 +83,16 @@ export function LessonCard({ lesson, user }) {
                               </span>
                          </div>
                     </div>
-                    <Button
-                         size="sm"
-                         radius="lg"
-                         endContent={<Eye className="w-3 h-3" />}
-                         className="bg-linear-to-l from-indigo-500 to-purple-500 hover:bg-purple-600 text-white font-semibold text-[10px] h-7 px-3 transition-all hover:scale-95"
-                    >
-                         Details
-                    </Button>
+                    <Link href={`/public-lessons/${lesson._id}`}>
+                         <Button
+                              size="sm"
+                              radius="lg"
+                              endContent={<Eye className="w-3 h-3" />}
+                              className="bg-linear-to-l from-indigo-500 to-purple-500 hover:bg-purple-600 text-white font-semibold text-[10px] h-7 px-3 transition-all hover:scale-95"
+                         >
+                              See Details
+                         </Button>
+                    </Link>
                </div>
           </Card>
      );
