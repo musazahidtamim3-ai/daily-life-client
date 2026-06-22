@@ -7,3 +7,7 @@ export const getLessons = async() => {
 export const getLessonById = async (lessonId) => {
      return await serverFetch(`/api/lessons/${lessonId}`);
 }
+
+export const getLessonByUserId = async (creatorId) => {
+     return await serverFetch(`/api/my-lessons/${creatorId}`);
+}

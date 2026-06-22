@@ -13,27 +13,27 @@ export default function Navbar() {
      const router = useRouter();
      const [isMenuOpen, setIsMenuOpen] = useState(false);
      const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-     const [isDarkMode, setIsDarkMode] = useState(true);
+     const [mounted, setMounted] = useState(false); 
      const dropdownRef = useRef(null);
 
-     // Better-Auth সেশন হুক
      const { data: sessionData, isPending } = authClient.useSession();
 
      const session = sessionData?.session;
      const user = sessionData?.user;
+     console.log(user)
 
      const isLoggedIn = !!session && !!user;
-     const isFreePlan = user?.plan === "free";
+
+     useEffect(() => {
+          setMounted(true);
+     }, []);
 
      const navLinks = [
           { label: "Home", href: "/" },
           { label: "Public Lessons", href: "/public-lessons" },
-          ...(isLoggedIn
-               ? [
-                    { label: "Pricing", href: "/pricing" }, 
-               ]
-               : []),
+          ...(isLoggedIn && user?.isPremium === false ? [{ label: "Pricing", href: "/pricing" }] : []),
      ];
+
      useEffect(() => {
           function handleClickOutside(event) {
                if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -44,7 +44,6 @@ export default function Navbar() {
           return () => document.removeEventListener("mousedown", handleClickOutside);
      }, []);
 
-     // লগআউট হ্যান্ডলার
      const handleLogout = async () => {
           try {
                setIsDropdownOpen(false);
@@ -92,8 +91,7 @@ export default function Navbar() {
                                         <Link
                                              key={index}
                                              href={item.href}
-                                             className={`text-sm font-medium relative py-2 transition-colors duration-200 ${isActive ? "text-purple-400" : "text-neutral-400 hover:text-white"
-                                                  }`}
+                                             className={`text-sm font-medium relative py-2 transition-colors duration-200 ${isActive ? "text-purple-400" : "text-neutral-400 hover:text-white"}`}
                                         >
                                              {item.label}
                                              {isActive && (
@@ -104,21 +102,36 @@ export default function Navbar() {
                               })}
                          </div>
 
-                         
                          <div className="flex items-center gap-4">
-                              <button
-                                   onClick={() => setIsDarkMode(!isDarkMode)}
-                                   type="button"
-                                   className="rounded-full p-2 text-neutral-400 hover:text-white transition-colors"
-                              >
-                                   {isDarkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-                              </button>
+                              {isLoggedIn ? user?.isPremium === true ? (
+                                   /* 👑 গর্জিয়াস গ্লোয়িং প্রিমিয়াম ব্যাজ (High Visibility) */
+                                   <span className="inline-flex items-center gap-2 bg-linear-to-r from-amber-500 to-yellow-500 text-neutral-950 px-3 py-1.5 text-xs font-black rounded-full shadow-[0_0_15px_rgba(245,158,11,0.4)] border border-amber-400 animate-in fade-in duration-200 select-none uppercase tracking-wide">
+                                        {/* ✨ Premium Crown Icon */}
+                                        <svg
+                                             xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 24 24"
+                                             fill="currentColor"
+                                             className="w-3.5 h-3.5 text-neutral-950"
+                                        >
+                                             <path d="M2 19h20v2H2v-2zM2 5l3.5 4.5L12 3l6.5 6.5L22 5v12H2V5z" />
+                                        </svg>
+                                        Premium
+                                   </span>
+                              ) : (
+                                   <span className="inline-flex items-center gap-2 bg-neutral-900 border-2 border-neutral-700 text-neutral-200 px-3 py-1.5 text-xs font-bold rounded-full shadow-md select-none tracking-wide">
+                                        <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981] animate-pulse" />
+                                        Free Plan
+                                   </span>
+                              ) : []}
 
+                              {/* 🎯 ডেস্কটপ অথেনটিকেশন ব্লক (ফিক্সড ও অপ্টিমাইজড) */}
                               <div className="hidden sm:flex items-center">
-                                   {isPending ? (
-                                        <div className="h-8 w-8 rounded-full bg-neutral-800 animate-pulse" />
+                                   {!mounted || isPending ? (
+                                        // লোডিং স্টেট বা মাউন্ট হওয়ার আগের কঙ্কাল (Skeleton)
+                                        <div className="h-8 w-24 rounded-full bg-neutral-800/60 animate-pulse" />
                                    ) : !isLoggedIn ? (
-                                        <div className="flex items-center gap-4">
+                                        // লগইন না থাকলে এই বাটনগুলো দেখাবে
+                                        <div className="flex items-center gap-4 animate-in fade-in duration-200">
                                              <Link href="/auth/login" className="text-sm font-medium text-neutral-300 hover:text-white transition-colors">
                                                   Login
                                              </Link>
@@ -130,8 +143,8 @@ export default function Navbar() {
                                              </Link>
                                         </div>
                                    ) : (
-                                        /* Desktop Dropdown Block */
-                                        <div className="relative" ref={dropdownRef}>
+                                        // 👑 সাকসেসফুলি লগইন থাকলে নিখুঁত ড্রপডাউন ব্লক
+                                        <div className="relative animate-in fade-in duration-200" ref={dropdownRef}>
                                              <button
                                                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                                                   type="button"
@@ -140,13 +153,13 @@ export default function Navbar() {
                                                   <Image
                                                        height={30}
                                                        width={30}
-                                                       className={`h-7 w-7 rounded-full object-cover border ${user?.plan === "premium" ? "border-amber-400" : "border-neutral-700"}`}
+                                                       className={`h-7 w-7 rounded-full object-cover border ${user?.isPremium === true ? "border-amber-400" : "border-neutral-700"}`}
                                                        src={user?.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb"}
                                                        alt={user?.name || "User Avatar"}
                                                   />
                                                   <div className="flex items-center gap-1">
                                                        <span className="text-xs font-medium text-neutral-300">Hi, {user?.name?.split(" ")[0]}</span>
-                                                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3 text-neutral-500">
+                                                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-3 h-3 text-neutral-500 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}>
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                                                        </svg>
                                                   </div>
@@ -165,7 +178,7 @@ export default function Navbar() {
                                                             <div className="flex flex-col min-w-0">
                                                                  <p className="truncate text-sm font-semibold text-white">{user?.name}</p>
                                                                  <p className={`text-[11px] font-medium tracking-wide uppercase ${user?.plan === "premium" ? "text-amber-400" : "text-neutral-400"}`}>
-                                                                      {user?.plan === "premium" ? "Premium" : "Free Plan"}
+                                                                      {user?.isPremium===true ? "Premium Plan" : "Free Plan"}
                                                                  </p>
                                                             </div>
                                                        </div>
@@ -183,10 +196,10 @@ export default function Navbar() {
                     </div>
                </div>
 
-               {isMenuOpen && (
+               {/* Mobile Menu */}
+               {isMenuOpen && mounted && !isPending && (
                     <div id="mobile-menu" className="sm:hidden border-t border-neutral-900 bg-[#09090b]/98 backdrop-blur-md px-4 pt-4 pb-6 space-y-3">
-
-                         {!isPending && isLoggedIn && (
+                         {isLoggedIn && (
                               <div className="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-4 mb-4 flex items-center gap-4">
                                    <Image
                                         height={45}
@@ -217,7 +230,7 @@ export default function Navbar() {
                               ))}
                          </div>
 
-                         {!isPending && !isLoggedIn && (
+                         {!isLoggedIn ? (
                               <div className="mt-4 border-t border-neutral-800 pt-4 space-y-2">
                                    <Link
                                         href="/auth/login"
@@ -234,9 +247,7 @@ export default function Navbar() {
                                         Sign Up
                                    </Link>
                               </div>
-                         )}
-
-                         {!isPending && isLoggedIn && (
+                         ) : (
                               <div className="mt-2 border-t border-neutral-800 pt-3 space-y-1">
                                    <Link
                                         href="/dashboard/profile"

@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === "development") {
      client = new MongoClient(process.env.MONGODB_URI || process.env.BETTER_AUTH_URI);
 }
 
-const db = client.db();
+const db = client.db("daily_life_db");
 
 export const auth = betterAuth({
      baseURL: process.env.BETTER_AUTH_URL,
@@ -21,26 +21,29 @@ export const auth = betterAuth({
      emailAndPassword: {
           enabled: true,
      },
+
      socialProviders: {
           google: {
                clientId: process.env.GOOGLE_CLIENT_ID,
                clientSecret: process.env.GOOGLE_CLIENT_SECRET,
           },
      },
+
      database: mongodbAdapter(db, {
           // Optional: if you don't provide a client, database transactions won't be enabled.
           client: client
      }),
+     
      user: {
           additionalFields: {
-               isPremium: {
-                    type: "boolean",
-                    defaultValue: false,
-               },
                role: {
                     type: "string",
-                    defaultValue: "user",
+                    defaultValue: "user" 
+               },
+               isPremium: {
+                    type: "boolean",   
+                    defaultValue: false  
                }
           }
-     },
+     }
 });

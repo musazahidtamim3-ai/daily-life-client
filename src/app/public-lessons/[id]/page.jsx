@@ -30,7 +30,7 @@ const LessonDetailsPage = async ({ params }) => {
      }
 
      const user = await getUserSession();
-     const isPremiumUser = user?.plan === 'premium';
+     const isPremiumUser = user?.isPremium;
      const isAuthor = user?.id === lesson.creatorId;
 
      // ⭐ Premium Member Lock - Ultra Premium Glassmorphism View
@@ -46,7 +46,7 @@ const LessonDetailsPage = async ({ params }) => {
                          </div>
                          <h2 className="text-xl font-bold tracking-tight text-white mb-2">Premium Member Lock</h2>
                          <p className="text-xs text-zinc-400 mb-6 leading-relaxed px-2">
-                              "{lesson.title}" জীবনের গভীর সত্য এবং শিক্ষণীয় অভিজ্ঞতাটি শুধুমাত্র প্রিমিয়াম মেম্বারদের জন্য সংরক্ষিত।
+                              "{lesson.title}" is only for premium users
                          </p>
                          <Link
                               href="/pricing"

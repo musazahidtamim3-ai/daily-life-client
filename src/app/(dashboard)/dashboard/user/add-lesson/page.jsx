@@ -9,7 +9,6 @@ export default function DashboardHome() {
      const { data: sessionData } = authClient.useSession();
      const user = sessionData?.user;
 
-     // স্ট্যাটস ডাটা উইথ কাস্টম নিয়ন গ্লো কালারস
      const stats = [
           {
                label: "Lessons Contributed",
@@ -34,7 +33,6 @@ export default function DashboardHome() {
           },
      ];
 
-     // রিসেন্ট ডামি লেসন ডাটা (ডিজাইন সুন্দর দেখানোর জন্য)
      const recentLessons = [
           { id: 1, title: "Embracing Mistakes in Your 20s", category: "Mistakes Learned", date: "2 mins ago", status: "Public" },
           { id: 2, title: "How Silence Heals Burnout", category: "Mindset", date: "1 day ago", status: "Premium" },
@@ -43,11 +41,10 @@ export default function DashboardHome() {
      return (
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom-5 duration-500 relative">
 
-               {/* 🌌 Background Ambient Light for Dashboard (Agun Effect) */}
                <div className="absolute -top-20 -left-20 w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[130px] pointer-events-none" />
                <div className="absolute top-40 right-0 w-[300px] h-[300px] bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none" />
 
-               {/* 👑 Header Section */}
+               {/* Header Section */}
                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-neutral-800/60 pb-6 relative z-10">
                     <div>
                          <div className="flex items-center gap-2 text-purple-400 text-xs font-mono tracking-widest uppercase mb-1">
@@ -68,7 +65,7 @@ export default function DashboardHome() {
                     </Link>
                </div>
 
-               {/* 🔮 Stats Grid with Neon Glow Borders */}
+               {/* Stats Grid with Neon Glow Borders */}
                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 relative z-10">
                     {stats.map((stat, i) => (
                          <div
@@ -91,7 +88,7 @@ export default function DashboardHome() {
                     ))}
                </div>
 
-               {/* 📜 Bottom Section: Recent Activities & Quote Block */}
+               {/* Bottom Section: Recent Activities & Quote Block */}
                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
 
                     {/* Left: Beautiful List of Recent Lessons */}

@@ -28,7 +28,9 @@ export function LessonCard({ lesson, user }) {
                          </div>
                          <h4 className="text-white font-bold text-sm">Premium Content</h4>
                          <p className="text-neutral-400 text-[11px] font-light max-w-[160px] mt-0.5">Upgrade your account to unlock.</p>
-                         <Button size="sm" className="mt-3 font-bold bg-amber-500 text-black hover:bg-amber-400 text-xs rounded-lg h-8">Upgrade</Button>
+                         {
+                              !user ? <Link href={'/auth/login'}><Button size="sm" className="mt-3 font-bold bg-linear-to-r from-amber-500 to-amber-400 text-black hover:bg-amber-400 text-xs rounded-lg h-8">Upgrade</Button></Link> : <Link href={'/pricing'}><Button size="sm" className="mt-3 font-bold bg-amber-500 text-black hover:bg-amber-400 text-xs rounded-lg h-8">Upgrade</Button></Link>
+                         }
                     </div>
                )}
 
