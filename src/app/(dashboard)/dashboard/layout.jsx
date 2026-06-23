@@ -4,18 +4,29 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutList, Plus, BookOpen, Heart, Person, Xmark, Bars } from "@gravity-ui/icons";
+import { authClient } from "@/lib/auth-client";
 
 export default function DashboardLayout({ children }) {
      const pathname = usePathname();
      const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-     const menuItems = [
-          { label: "Overview", href: "/dashboard/user", icon: <LayoutList className="w-5 h-5" /> },
-          { label: "Add Lesson", href: "/dashboard/user/add-lesson", icon: <Plus className="w-5 h-5" /> },
-          { label: "My Lessons", href: "/dashboard/user/my-lessons", icon: <BookOpen className="w-5 h-5" /> },
-          { label: "My Favorites", href: "/dashboard/user/my-favorites", icon: <Heart className="w-5 h-5" /> },
-          { label: "Profile", href: "/dashboard/user/profile", icon: <Person className="w-5 h-5" /> },
-     ];
+     const { data: sessionData } = authClient.useSession();
+     const user = sessionData?.user;
+
+     const menuItems = user?.role === "admin" ? [
+               { label: "Overview", href: "/dashboard/admin", icon: <LayoutList className="w-5 h-5" /> },
+               { label: "User Management", href: "/dashboard/admin/manage-users", icon: <Person className="w-5 h-5" /> },
+               { label: "Lesson Management", href: "/dashboard/admin/manage-lessons", icon: <BookOpen className="w-5 h-5" /> },
+               { label: "Reported Lesson Management", href: "/dashboard/admin/manage-reported-lessons", icon: <BookOpen className="w-5 h-5" /> },
+               { label: "profile", href: "/dashboard/admin/profile", icon: <Person className="w-5 h-5" /> },
+          ] : [
+               { label: "Overview", href: "/dashboard/user", icon: <LayoutList className="w-5 h-5" /> },
+               { label: "Add Lesson", href: "/dashboard/user/add-lesson", icon: <Plus className="w-5 h-5" /> },
+               { label: "My Lessons", href: "/dashboard/user/my-lessons", icon: <BookOpen className="w-5 h-5" /> },
+               { label: "My Favorites", href: "/dashboard/user/my-favorites", icon: <Heart className="w-5 h-5" /> },
+               { label: "Profile", href: "/dashboard/user/profile", icon: <Person className="w-5 h-5" /> },
+          ];
+
 
      return (
           <div className="min-h-screen bg-[#09090b] text-white flex flex-col relative">

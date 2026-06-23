@@ -41,7 +41,7 @@ const LessonDetailsPage = async ({ params }) => {
                     <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-72 h-72 bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" />
 
                     <div className="relative max-w-sm w-full bg-zinc-900/60 backdrop-blur-xl border border-zinc-800 p-8 rounded-3xl shadow-[0_30px_60px_rgba(0,0,0,0.4)] text-center">
-                         <div className="w-12 h-12 bg-gradient-to-tr from-amber-500 to-yellow-400 rounded-2xl flex items-center justify-center mx-auto mb-5 text-xl shadow-lg shadow-amber-500/20">
+                         <div className="w-12 h-12 bg-gradient-to-l from-amber-500 to-yellow-400 rounded-2xl flex items-center justify-center mx-auto mb-5 text-xl shadow-lg shadow-amber-500/20">
                               ⭐
                          </div>
                          <h2 className="text-xl font-bold tracking-tight text-white mb-2">Premium Member Lock</h2>

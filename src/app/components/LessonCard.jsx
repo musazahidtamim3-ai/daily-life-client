@@ -12,7 +12,7 @@ export function LessonCard({ lesson, user }) {
      const { title, description, category, emotionalTone, imageUrl, accessLevel, creatorInfo } = lesson;
 
      const isUserPremium = user?.isPremium === true;
-     const isLessonPremium = accessLevel === "Premium";
+     const isLessonPremium = user?.isPremium === true;
      const isLocked = isLessonPremium && !isUserPremium;
 
      const creatorName = creatorInfo?.name || "Jahidul Islam";
