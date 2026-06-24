@@ -24,8 +24,6 @@ export default async function Success({ searchParams }) {
 
      if (status === 'complete') {
           const subsInfo = {
-               // ✅ Use metadata.userEmail (set at checkout from Better-Auth session)
-               // instead of customerEmail (typed by user in Stripe form — may differ)
                email: metadata.userEmail,
                planId: metadata.planId
           }

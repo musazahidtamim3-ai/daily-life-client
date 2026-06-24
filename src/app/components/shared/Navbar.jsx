@@ -183,8 +183,8 @@ export default function Navbar() {
                                                             </div>
                                                        </div>
 
-                                                       <Link href="/dashboard/profile" onClick={() => setIsDropdownOpen(false)} className="block px-3 py-2 text-sm text-neutral-300 hover:bg-neutral-800/60 rounded-lg transition-colors">Profile</Link>
-                                                       <Link href="/dashboard/user" onClick={() => setIsDropdownOpen(false)} className="block px-3 py-2 text-sm text-neutral-300 hover:bg-neutral-800/60 rounded-lg transition-colors">Dashboard</Link>
+                                                                 <Link href={user?.role === "admin" ? "/dashboard/admin/profile" : "/dashboard/user/profile"} onClick={() => setIsDropdownOpen(false)} className="block px-3 py-2 text-sm text-neutral-300 hover:bg-neutral-800/60 rounded-lg transition-colors">Profile</Link>
+                                                                 <Link href={user?.role === "admin" ? "/dashboard/admin" : "/dashboard/user"} onClick={() => setIsDropdownOpen(false)} className="block px-3 py-2 text-sm text-neutral-300 hover:bg-neutral-800/60 rounded-lg transition-colors">Dashboard</Link>
                                                        <button onClick={handleLogout} className="block w-full text-left px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">Logout</button>
                                                   </div>
                                              )}

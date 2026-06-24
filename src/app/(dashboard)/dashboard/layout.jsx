@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }) {
                { label: "Overview", href: "/dashboard/admin", icon: <LayoutList className="w-5 h-5" /> },
                { label: "User Management", href: "/dashboard/admin/manage-users", icon: <Person className="w-5 h-5" /> },
                { label: "Lesson Management", href: "/dashboard/admin/manage-lessons", icon: <BookOpen className="w-5 h-5" /> },
-               { label: "Reported Lesson Management", href: "/dashboard/admin/manage-reported-lessons", icon: <BookOpen className="w-5 h-5" /> },
+               { label: "Reported Lessons", href: "/dashboard/admin/report-lessons", icon: <BookOpen className="w - 5 h- 5" /> },
                { label: "profile", href: "/dashboard/admin/profile", icon: <Person className="w-5 h-5" /> },
           ] : [
                { label: "Overview", href: "/dashboard/user", icon: <LayoutList className="w-5 h-5" /> },

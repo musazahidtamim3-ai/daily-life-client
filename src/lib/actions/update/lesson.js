@@ -15,3 +15,25 @@ export const UpdateLikeCount = async (lessonId, currentUser) => {
           throw error;
      }
 };
+
+export const updateFeaturedLessons = async (lessonId, userId) => {
+     try {
+          const response = await fetch(`http://localhost:5000/api/lessons/${lessonId}/featured`, {
+               method: 'PATCH',
+               headers: {
+                    'Content-Type': 'application/json',
+               },
+               body: JSON.stringify({ userId }),
+          });
+
+          if (!response.ok) {
+               const errorData = await response.json().catch(() => ({}));
+               throw new Error(errorData.message || 'Failed to update featured status');
+          }
+
+          return response.json();
+     } catch (error) {
+          console.error("Fetch Error:", error);
+          throw error;
+     }
+};

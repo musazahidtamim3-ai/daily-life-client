@@ -22,6 +22,8 @@ import {
      Bar,
      Legend
 } from 'recharts';
+import { getUsers } from '@/lib/actions/get/users';
+import { getLessons } from '@/lib/actions/get/lessons';
 
 // 📊 1. DEMO DATA FOR GRAPHS (Lesson & User Growth)
 const growthData = [
@@ -48,14 +50,17 @@ const todaysLessons = [
      { id: '3', title: 'The Power of Saying NO in Relationships', author: 'Fariha Alam', category: 'Relationships', time: '1 hour ago' },
 ];
 
+const users = await getUsers();
+const lessons = await getLessons();
+
 export default function AdminDashboardHome() {
 
      // 💡 Stats Card Data Helper
      const stats = [
-          { title: 'Total Users', value: '3,124', icon: <Persons className="w-5 h-5 text-blue-500" />, change: '+12% this week' },
-          { title: 'Public Lessons', value: '1,452', icon: <Layers className="w-5 h-5 text-emerald-500" />, change: '+8% this week' },
-          { title: 'Reported / Flagged', value: '14', icon: <ShieldExclamation className="w-5 h-5 text-rose-500" />, change: '-3 since yesterday', warning: true },
-          { title: "Today's New Lessons", value: '27', icon: <Calendar className="w-5 h-5 text-purple-500" />, change: 'Expected ~40 today' },
+          { title: 'Total Users', value: users.length, icon: <Persons className="w-5 h-5 text-blue-500" /> },
+          { title: 'Public Lessons', value: lessons.length, icon: <Layers className="w-5 h-5 text-emerald-500" />},
+          { title: 'Reported / Flagged', value: '14', icon: <ShieldExclamation className="w-5 h-5 text-rose-500" /> },
+          { title: "Today's New Lessons", value: '27', icon: <Calendar className="w-5 h-5 text-purple-500" />},
      ];
 
      return (
@@ -82,12 +87,7 @@ export default function AdminDashboardHome() {
                                         {stat.icon}
                                    </div>
                               </div>
-                              <div className="mt-4">
-                                   <h3 className="text-3xl font-black tracking-tight text-zinc-100">{stat.value}</h3>
-                                   <p className={`text-[11px] mt-1 font-medium ${stat.warning ? 'text-rose-400' : 'text-zinc-500'}`}>
-                                        {stat.change}
-                                   </p>
-                              </div>
+                                   <h3 className="text-3xl font-black tracking-tight text-zinc-100 mt-2">{stat.value}</h3>
                          </div>
                     ))}
                </div>

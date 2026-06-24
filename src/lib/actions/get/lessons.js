@@ -11,3 +11,7 @@ export const getLessonById = async (lessonId) => {
 export const getLessonByUserId = async (creatorId) => {
      return await serverFetch(`/api/my-lessons/${creatorId}`);
 }
+
+export const getFeaturedLessons = async () => {
+     return await serverFetch("/api/lessons/featured");
+}

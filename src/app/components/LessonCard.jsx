@@ -9,14 +9,11 @@ import Link from "next/link";
 export function LessonCard({ lesson, user }) {
      if (!lesson) return null;
 
-     const { title, description, category, emotionalTone, imageUrl, accessLevel, creatorInfo } = lesson;
+     const { title, description, category, emotionalTone, imageUrl, accessLevel, creatorName, creatorImage } = lesson;
 
      const isUserPremium = user?.isPremium === true;
-     const isLessonPremium = user?.isPremium === true;
+     const isLessonPremium = accessLevel === "premium";
      const isLocked = isLessonPremium && !isUserPremium;
-
-     const creatorName = creatorInfo?.name || "Jahidul Islam";
-     const creatorAvatar = creatorInfo?.image || creatorInfo?.avatar || "https://i.pravatar.cc/150?img=33";
 
      return (
           <Card className="w-full bg-[#0c0c10]/90 border border-neutral-900 rounded-2xl overflow-hidden hover:border-purple-500/40 transition-all duration-300 group flex flex-col justify-between shadow-xl relative">
@@ -47,8 +44,8 @@ export function LessonCard({ lesson, user }) {
                               <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c10] to-transparent" />
                               <div className="absolute top-3 right-3 z-20">
                                    <span className={`text-[10px] tracking-wider font-extrabold px-2.5 py-1 rounded-md uppercase backdrop-blur-md shadow-lg border ${isLessonPremium
-                                        ? "bg-amber-500/20 text-amber-400 border-amber-500/30"
-                                        : "bg-purple-500/20 text-purple-400 border-purple-500/30"
+                                        ? "bg-linear-to-l from-amber-600 to-amber-400 text-white border-amber-500/30"
+                                        : "bg-linear-to-l from-indigo-500 to-purple-500 text-white border-purple-500/30"
                                         }`}>
                                         {accessLevel}
                                    </span>
@@ -77,13 +74,8 @@ export function LessonCard({ lesson, user }) {
 
                <div className="p-3 mx-3 mb-3 flex items-center justify-between border-t border-neutral-900/60 bg-[#121217]/50 rounded-xl mt-3">
                     <div className="flex items-center gap-2">
-                         <Avatar src={creatorAvatar} size="sm" className="w-6 h-6 border border-neutral-800" />
-                         <div className="flex flex-col">
-                              <span className="text-[11px] font-medium text-neutral-300 leading-none">{creatorName}</span>
-                              <span className="text-[9px] text-neutral-500 font-light mt-0.5 flex items-center gap-0.5">
-                                   <Calendar className="w-2.5 h-2.5" /> Recent
-                              </span>
-                         </div>
+                         <Image src={creatorImage || 'https://i.pravatar.cc/150?img=33'} alt={creatorName || 'Jahidul Islam'} width={30} height={30} className="w-6 h-6 rounded-full border border-neutral-800" />
+                              <span className="text-sm font-medium text-neutral-300 leading-none">{creatorName||'Jahidul Islam'}</span>    
                     </div>
                     <Link href={`/public-lessons/${lesson._id}`}>
                          <Button

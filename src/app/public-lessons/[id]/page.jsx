@@ -14,6 +14,7 @@ import {
 } from '@gravity-ui/icons';
 import { LikeButton } from '@/app/components/LikeButton';
 import { getLessonById } from '@/lib/actions/get/lessons';
+import Image from 'next/image';
 
 export const dynamic = 'force-dynamic';
 
@@ -94,8 +95,8 @@ const LessonDetailsPage = async ({ params }) => {
                     {/* FEATURED BANNER IMAGE (If exists) */}
                     {lesson.imageUrl && (
                          <div className="w-full h-[280px] md:h-[460px] relative rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-zinc-900 mb-12 group">
-                              <img src={lesson.imageUrl} alt={lesson.title} className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105" />
-                              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/40 via-transparent to-transparent" />
+                              <Image src={lesson.imageUrl} alt={lesson.title} width={1000} height={280} className="object-cover w-full h-full" />
+                              <div className="absolute inset-0 bg-linear-to-t from-zinc-950/40 via-transparent to-transparent" />
                          </div>
                     )}
 
@@ -173,8 +174,10 @@ const LessonDetailsPage = async ({ params }) => {
 
                                    <div className="flex items-center gap-4">
                                         <div className="relative w-12 h-12 rounded-full overflow-hidden border border-zinc-700 bg-zinc-800">
-                                             <img
+                                             <Image
                                                   src={lesson.creatorImage || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
+                                                  height={20}
+                                                  width={20}
                                                   alt={lesson.creatorName}
                                                   className="object-cover w-full h-full"
                                              />

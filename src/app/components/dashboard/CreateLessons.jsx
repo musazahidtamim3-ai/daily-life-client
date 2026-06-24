@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { submitLessons } from '@/lib/actions/submit/lessons';
 import { toast } from 'react-hot-toast';
 
-export default function CreateLessons({ userId, isUserPremium }) {
+export default function CreateLessons({ userId, isUserPremium, userName, userImage }) {
      const router = useRouter();
      const [loading, setLoading] = useState(false);
 
@@ -36,7 +36,9 @@ export default function CreateLessons({ userId, isUserPremium }) {
                emotionalTone: formData.emotionalTone,
                imageUrl: formData.image,       
                accessLevel: formData.access,  
-               creatorId: userId,           
+               creatorId: userId, 
+               creatorName: userName,
+               creatorImage: userImage,
                likes: [],
                likesCount: 0,
                savesCount: 0,             

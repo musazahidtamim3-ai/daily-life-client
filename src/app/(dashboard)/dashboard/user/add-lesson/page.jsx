@@ -15,6 +15,8 @@ const AddLessonPage = async () => {
      }
 
      const userId = user.id;
+     const userName = user.name;
+     const userImage = user.image;
      const isUserPremium = user.isPremium || false;
 
      return (
@@ -34,7 +36,7 @@ const AddLessonPage = async () => {
                     </div>
 
                     {/* Updated Client Form */}
-                    <CreateLessons userId={userId} isUserPremium={isUserPremium} />
+                    <CreateLessons userId={userId} isUserPremium={isUserPremium} userName={userName} userImage={userImage} />
                </div>
           </div>
      );
