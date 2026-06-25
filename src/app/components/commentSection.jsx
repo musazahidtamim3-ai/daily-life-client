@@ -73,7 +73,7 @@ export function CommentSection({ lesson }) {
                          <p className="text-xs text-zinc-500 py-4 text-center">No insights shared yet. Start the thread!</p>
                     ) : (
                          comments.map(comment => (
-                              <div key={comment.id} className="flex items-start gap-3 p-4 bg-zinc-900/40 rounded-2xl border border-zinc-800">
+                              <div key={comment.createdAt || index} className="flex items-start gap-3 p-4 bg-zinc-900/40 rounded-2xl border border-zinc-800">
                                    <Image
                                         src={comment.userImage || 'https://i.pravatar.cc/40'}
                                         alt={comment.userName}

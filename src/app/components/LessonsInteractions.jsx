@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Heart, Bookmark, Eye, TriangleExclamation } from '@gravity-ui/icons';
+import { Heart, Bookmark, Eye } from '@gravity-ui/icons';
 import { LikeButton } from './LikeButton';
 import { SavedButton } from './SavedButton';
+import { ReportModal } from './ReportModal';
 
 export function LessonInteractions({ lesson, viewsCount }) {
      const [likesCount, setLikesCount] = useState(lesson?.likes?.length || 0);
@@ -30,9 +31,7 @@ export function LessonInteractions({ lesson, viewsCount }) {
                <div className="flex items-center gap-2">
                     <LikeButton lesson={lesson} onLikeChange={setLikesCount} />
                     <SavedButton lesson={lesson} onSaveChange={setSavesCount} />
-                    <button className="flex items-center justify-center p-2.5 rounded-xl bg-zinc-900/50 hover:bg-red-950/30 text-zinc-500 hover:text-red-400 border border-zinc-800 hover:border-red-900/50 transition-all duration-200">
-                         <TriangleExclamation className="w-4 h-4" />
-                    </button>
+                    <ReportModal lesson={lesson} />
                </div>
           </div>
      );
