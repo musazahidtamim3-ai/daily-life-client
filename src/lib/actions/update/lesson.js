@@ -8,8 +8,23 @@ export const UpdateLikeCount = async (lessonId, currentUser) => {
                body: JSON.stringify({ userId: currentUser.id }),
           });
 
-          const data = await response.json();
-          return data;
+          return response.json();
+     } catch (error) {
+          console.error("Fetch Error:", error);
+          throw error;
+     }
+};
+export const UpdateSaveCount = async (lessonId, currentUser) => {
+     try {
+          const response = await fetch(`http://localhost:5000/api/lessons/${lessonId}/save`, {
+               method: 'PATCH',
+               headers: {
+                    'Content-Type': 'application/json',
+               },
+               body: JSON.stringify({ userId: currentUser.id || currentUser._id }),
+          });
+
+          return response.json();
      } catch (error) {
           console.error("Fetch Error:", error);
           throw error;

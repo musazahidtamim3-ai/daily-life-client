@@ -2,19 +2,15 @@ import { getUserSession } from '@/lib/core/session';
 import React from 'react';
 import Link from 'next/link';
 
-// 🚀 Gravity UI Icons
 import {
-     Heart,
-     Bookmark,
      Eye,
      Calendar,
      Clock,
-     TriangleExclamation,
      ArrowRight
 } from '@gravity-ui/icons';
-import { LikeButton } from '@/app/components/LikeButton';
 import { getLessonById } from '@/lib/actions/get/lessons';
 import Image from 'next/image';
+import { LessonInteractions } from '@/app/components/LessonsInteractions';
 
 export const dynamic = 'force-dynamic';
 
@@ -112,31 +108,7 @@ const LessonDetailsPage = async ({ params }) => {
                               </article>
 
                               {/* 4 & 5. STATS & INTERACTION BUTTONS */}
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 bg-zinc-900/40 border border-zinc-800/80 p-5 rounded-2xl shadow-inner">
-                                   {/* Left Side Engagement Stats */}
-                                   <div className="flex items-center gap-5 text-xs font-semibold text-zinc-400">
-                                        <span className="flex items-center gap-1.5 bg-zinc-950 px-3 py-1.5 rounded-xl border border-zinc-900 text-rose-400">
-                                             <Heart className="w-4 h-4 fill-rose-500/10" /> {lesson.likesCount || lesson.likes?.length || 0} Likes
-                                        </span>
-                                        <span className="flex items-center gap-1.5 bg-zinc-950 px-3 py-1.5 rounded-xl border border-zinc-900 text-indigo-400">
-                                             <Bookmark className="w-4 h-4" /> {lesson.favoritesCount || 0} Saved
-                                        </span>
-                                        <span className="flex items-center gap-1.5 bg-zinc-950 px-3 py-1.5 rounded-xl border border-zinc-900 text-zinc-400">
-                                             <Eye className="w-4 h-4" /> {viewsCount} Views
-                                        </span>
-                                   </div>
-
-                                   {/* Right Side Buttons */}
-                                   <div className="flex items-center gap-2">
-                                        <LikeButton lesson={lesson} />
-                                        <button className="flex items-center gap-1.5 text-xs font-bold px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 text-white border border-zinc-800 transition-all duration-200 active:scale-95 shadow-sm">
-                                             <Bookmark className="w-3.5 h-3.5 text-indigo-400" /> Save
-                                        </button>
-                                        <button className="flex items-center justify-center p-2.5 rounded-xl bg-zinc-900/50 hover:bg-red-950/30 text-zinc-500 hover:text-red-400 border border-zinc-800 hover:border-red-900/50 transition-all duration-200">
-                                             <TriangleExclamation className="w-4 h-4" />
-                                        </button>
-                                   </div>
-                              </div>
+                              <LessonInteractions lesson={lesson} viewsCount={viewsCount} />
 
                               {/* 6. COMMENT SECTION */}
                               <section className="space-y-5 bg-zinc-900/10 border border-zinc-900 p-6 rounded-3xl">
