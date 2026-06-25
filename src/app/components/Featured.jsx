@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Flame } from "@gravity-ui/icons";
+import { Flame, Heart } from "@gravity-ui/icons";
 import { getFeaturedLessons } from '@/lib/actions/get/lessons';
 
 const FeaturedCards = async () => {
@@ -104,12 +104,9 @@ const FeaturedCards = async () => {
                                              </p>
                                         </div>
 
-                                        <Link
-                                             href={`/public-lessons/${lesson._id}`}
-                                             className="h-8 inline-flex items-center justify-center px-4 bg-linear-to-l from-indigo-500 to-purple-600 hover:bg-purple-500 text-white rounded-full text-xs font-bold tracking-wide transition-colors duration-200 shadow-md flex-shrink-0 cursor-pointer"
-                                        >
-                                             See Details
-                                        </Link>
+                                        <div className="flex items-center gap-1.5 text-sm text-rose-400">
+                                             <Heart className="w-3 h-3 fill-rose-500/10" /> {lesson.likes.length || 0} Likes
+                                        </div>
                                    </div>
 
                               </div>

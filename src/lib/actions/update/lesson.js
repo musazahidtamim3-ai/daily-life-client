@@ -14,6 +14,7 @@ export const UpdateLikeCount = async (lessonId, currentUser) => {
           throw error;
      }
 };
+
 export const UpdateSaveCount = async (lessonId, currentUser) => {
      try {
           const response = await fetch(`http://localhost:5000/api/lessons/${lessonId}/save`, {
@@ -21,7 +22,7 @@ export const UpdateSaveCount = async (lessonId, currentUser) => {
                headers: {
                     'Content-Type': 'application/json',
                },
-               body: JSON.stringify({ userId: currentUser.id || currentUser._id }),
+               body: JSON.stringify({ userId: currentUser.id }),
           });
 
           return response.json();
@@ -30,6 +31,7 @@ export const UpdateSaveCount = async (lessonId, currentUser) => {
           throw error;
      }
 };
+
 
 export const updateFeaturedLessons = async (lessonId, userId) => {
      try {
