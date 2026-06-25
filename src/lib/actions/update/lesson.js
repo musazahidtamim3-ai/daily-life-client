@@ -32,6 +32,23 @@ export const UpdateSaveCount = async (lessonId, currentUser) => {
      }
 };
 
+export const addComment = async (lessonId, text, currentUser) => {
+     const res = await fetch(`http://localhost:5000/api/lessons/${lessonId}/comments`, {
+          method: 'POST',
+          headers: {
+               'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+               userId: currentUser.id,
+               userName: currentUser.name,
+               userImage: currentUser.image,
+               text,
+          }),
+          
+     });
+     return res.json();
+};
+
 
 export const updateFeaturedLessons = async (lessonId, userId) => {
      try {

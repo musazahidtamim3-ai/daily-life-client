@@ -11,6 +11,7 @@ import {
 import { getLessonById } from '@/lib/actions/get/lessons';
 import Image from 'next/image';
 import { LessonInteractions } from '@/app/components/LessonsInteractions';
+import { CommentSection } from '@/app/components/commentSection';
 
 export const dynamic = 'force-dynamic';
 
@@ -111,30 +112,7 @@ const LessonDetailsPage = async ({ params }) => {
                               <LessonInteractions lesson={lesson} viewsCount={viewsCount} />
 
                               {/* 6. COMMENT SECTION */}
-                              <section className="space-y-5 bg-zinc-900/10 border border-zinc-900 p-6 rounded-3xl">
-                                   <div className="flex items-center justify-between">
-                                        <h3 className="text-xs font-black tracking-widest uppercase text-zinc-400">Discussion Forum</h3>
-                                        <span className="text-[10px] bg-zinc-900 px-2.5 py-1 rounded-md text-zinc-500 border border-zinc-800">0 Comments</span>
-                                   </div>
-
-                                   {user ? (
-                                        <div className="relative flex items-center border border-zinc-800 focus-within:border-zinc-700 focus-within:ring-1 focus-within:ring-zinc-700 rounded-2xl bg-zinc-950 p-2 transition-all duration-200">
-                                             <input
-                                                  type="text"
-                                                  placeholder="Add your insight to this lesson..."
-                                                  className="w-full px-4 py-2 text-sm bg-transparent text-zinc-100 focus:outline-none placeholder-zinc-500"
-                                             />
-                                             <button className="px-5 py-2 text-xs font-bold uppercase tracking-wider bg-white hover:bg-zinc-200 text-zinc-950 rounded-xl transition shadow-md">
-                                                  Post
-                                             </button>
-                                        </div>
-                                   ) : (
-                                        <div className="text-xs text-zinc-400 bg-zinc-950/60 p-4 rounded-xl border border-zinc-900 text-center tracking-wide">
-                                             Please log in to participate in the conversation.
-                                        </div>
-                                   )}
-                                   <div className="text-xs text-zinc-500 py-4 text-center tracking-wide font-medium">No insights shared yet. Start the thread!</div>
-                              </section>
+                              <CommentSection lesson={lesson} />
                          </div>
 
                          {/* RIGHT COLUMN: SIDEBAR MODULES (Beautifully Contained) */}

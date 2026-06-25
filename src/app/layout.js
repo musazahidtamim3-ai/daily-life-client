@@ -1,6 +1,7 @@
 import { Poppins } from "next/font/google";
-import "@/app/globals.css"; // আপনার গ্লোবাল সিএসএস পাথ
+import "@/app/globals.css"; 
 import LayoutWrapper from "./components/LayoutWrapper";
+import { ToastContainer } from "react-toastify";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -8,7 +9,6 @@ const poppins = Poppins({
   weight: ['300', '400', '600', '700']
 });
 
-// 👑 আপনার মেটাডাটা এখন এখানে শান্তিতে থাকবে, কোনো এরর আসবে না!
 export const metadata = {
   title: "Daily Life Lessons - Share Your Wisdom",
   description: "A premium platform to share and reflect on real-life lessons.",
@@ -23,10 +23,11 @@ export default function RootLayout({ children }) {
       className={`${poppins.className} h-full antialiased`}>
       
       <body className="bg-[#09090b] text-white">
-        {/* ক্লায়েন্ট র‍্যাপার দিয়ে নেভিগেশন বার ও ফুটোর হ্যান্ডেল করা হচ্ছে */}
         <LayoutWrapper>
           {children}
+          <ToastContainer />
         </LayoutWrapper>
+
       </body>
     </html>
   );

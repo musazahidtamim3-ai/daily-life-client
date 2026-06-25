@@ -12,7 +12,6 @@ export default function LayoutWrapper({ children }) {
           <>
                <Navbar/>
                {children}
-               {/* ড্যাশবোর্ড পেজ না হলে কেবল ফুটোর দেখাবে */}
                {!isDashboard && <Footer/>}
           </>
      );
