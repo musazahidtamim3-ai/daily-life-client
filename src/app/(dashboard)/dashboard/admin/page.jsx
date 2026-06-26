@@ -23,7 +23,7 @@ import {
      Legend
 } from 'recharts';
 import { getUsers } from '@/lib/actions/get/users';
-import { getLessons } from '@/lib/actions/get/lessons';
+import { getLessons, getReportedLessons } from '@/lib/actions/get/lessons';
 
 // 📊 1. DEMO DATA FOR GRAPHS (Lesson & User Growth)
 const growthData = [
@@ -52,6 +52,7 @@ const todaysLessons = [
 
 const users = await getUsers();
 const lessons = await getLessons();
+const reportedLessons = await getReportedLessons();
 
 export default function AdminDashboardHome() {
 
@@ -59,7 +60,7 @@ export default function AdminDashboardHome() {
      const stats = [
           { title: 'Total Users', value: users.length, icon: <Persons className="w-5 h-5 text-blue-500" /> },
           { title: 'Public Lessons', value: lessons.length, icon: <Layers className="w-5 h-5 text-emerald-500" />},
-          { title: 'Reported / Flagged', value: '14', icon: <ShieldExclamation className="w-5 h-5 text-rose-500" /> },
+          { title: 'Reported / Flagged', value: reportedLessons.length, icon: <ShieldExclamation className="w-5 h-5 text-rose-500" /> },
           { title: "Today's New Lessons", value: '27', icon: <Calendar className="w-5 h-5 text-purple-500" />},
      ];
 

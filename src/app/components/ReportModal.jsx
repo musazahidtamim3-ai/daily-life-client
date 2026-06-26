@@ -30,6 +30,8 @@ export function ReportModal({ lesson }) {
           try {
                const data = await reportLesson({
                     lessonId: lesson._id || lesson.id,
+                    lessonTitle: lesson.title,
+                    lessonImageUrl: lesson.imageUrl,
                     reason: reason,
                     reporterUserId: user?.id,
                     reporterEmail: user?.email,

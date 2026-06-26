@@ -15,3 +15,8 @@ export const getLessonByUserId = async (creatorId) => {
 export const getFeaturedLessons = async () => {
      return await serverFetch("/api/lessons/featured");
 }
+
+export const getReportedLessons = async () => {
+     const res = await fetch(`http://localhost:5000/api/lessons/report`);
+     return res.json();
+}
