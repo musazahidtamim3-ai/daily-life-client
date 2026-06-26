@@ -24,6 +24,7 @@ import {
 } from 'recharts';
 import { getUsers } from '@/lib/actions/get/users';
 import { getLessons, getReportedLessons } from '@/lib/actions/get/lessons';
+import TopContributors from '@/app/components/TopContributor';
 
 // 📊 1. DEMO DATA FOR GRAPHS (Lesson & User Growth)
 const growthData = [
@@ -33,14 +34,6 @@ const growthData = [
      { name: 'Apr', users: 1900, lessons: 850 },
      { name: 'May', users: 2500, lessons: 1100 },
      { name: 'Jun', users: 3100, lessons: 1450 },
-];
-
-// 🏆 2. DEMO DATA FOR MOST ACTIVE CONTRIBUTORS
-const topContributors = [
-     { id: 1, name: 'Anisur Rahman', email: 'anis@dev.com', lessons: 28, avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100' },
-     { id: 2, name: 'Tamim Iqbal', email: 'tamim@ui.com', lessons: 22, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100' },
-     { id: 3, name: 'Suhana Yasmin', email: 'suhana@grow.com', lessons: 19, avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100' },
-     { id: 4, name: 'Rakibul Islam', email: 'rakib@tech.com', lessons: 15, avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100' },
 ];
 
 // 🕒 3. DEMO DATA FOR TODAY'S NEW LESSONS
@@ -162,34 +155,8 @@ export default function AdminDashboardHome() {
                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                     {/* Most Active Contributors (2 Cols wide on desktop) */}
-                    <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-5 backdrop-blur-md lg:col-span-2 space-y-4">
-                         <div className="flex items-center justify-between border-b border-zinc-800/60 pb-3">
-                              <div>
-                                   <h2 className="text-sm font-bold text-zinc-200 flex items-center gap-2">
-                                        <MagicWand className="w-4 h-4 text-amber-500" /> Most Active Contributors
-                                   </h2>
-                                   <p className="text-[11px] text-zinc-500">Top authors based on published lessons</p>
-                              </div>
-                         </div>
-
-                         <div className="divide-y divide-zinc-800/50">
-                              {topContributors.map((user) => (
-                                   <div key={user.id} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
-                                        <div className="flex items-center gap-3">
-                                             <img src={user.avatar} alt={user.name} className="w-9 h-9 rounded-xl object-cover border border-zinc-800" />
-                                             <div>
-                                                  <h4 className="text-xs font-bold text-zinc-200">{user.name}</h4>
-                                                  <p className="text-[10px] text-zinc-500">{user.email}</p>
-                                             </div>
-                                        </div>
-                                        <div className="text-right">
-                                             <span className="inline-flex items-center gap-1 text-xs font-black px-2.5 py-1 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-300">
-                                                  {user.lessons} <span className="text-[10px] font-normal text-zinc-500">lessons</span>
-                                             </span>
-                                        </div>
-                                   </div>
-                              ))}
-                         </div>
+                    <div className=" lg:col-span-2 space-y-4">
+                         <TopContributors/>
                     </div>
 
                     {/* Today's New Lessons (1 Col wide) */}

@@ -11,19 +11,14 @@ export default function ProfilePage() {
      const [isModalOpen, setIsModalOpen] = useState(false);
      const [isSubmitting, setIsSubmitting] = useState(false);
 
-     // Fetch Better-Auth session info
      const { data: sessionData, isPending } = authClient.useSession();
 
      const user = sessionData?.user;
-     const isPremium = user?.plan === "premium";
-     // চেক করা হচ্ছে ইউজার অ্যাডমিন কিনা
      const isAdmin = user?.role === "admin";
 
-     // Controlled inputs state
      const [tempName, setTempName] = useState("");
      const [tempAvatar, setTempAvatar] = useState("");
 
-     // Sync input states safely
      useEffect(() => {
           if (user) {
                setTempName(user.name || "");
@@ -31,12 +26,6 @@ export default function ProfilePage() {
           }
      }, [user]);
 
-     const stats = [
-          { label: "Lessons Created", count: 12, icon: <BookOpen className="w-5 h-5 text-purple-400" /> },
-          { label: "Lessons Saved", count: 45, icon: <Heart className="w-5 h-5 text-pink-400" /> },
-     ];
-
-     // 🔄 Better-Auth দিয়ে প্রোফাইল ফটো ও নাম আপডেট করার লজিক
      const handleSaveChanges = async () => {
           if (!tempName.trim()) {
                return toast.error("Display name cannot be empty.");
@@ -123,20 +112,6 @@ export default function ProfilePage() {
                               </button>
                          </div>
 
-                         {/* 📊 Counters */}
-                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-neutral-900">
-                              {stats.map((stat, i) => (
-                                   <div key={i} className="bg-neutral-900/30 border border-neutral-800/40 p-4 rounded-xl flex items-center justify-between">
-                                        <div className="space-y-1">
-                                             <span className="text-xs text-neutral-400 font-medium">{stat.label}</span>
-                                             <p className="text-2xl font-black text-white tracking-tight">{stat.count}</p>
-                                        </div>
-                                        <div className="p-3 bg-neutral-900/80 border border-neutral-800/60 rounded-xl">
-                                             {stat.icon}
-                                        </div>
-                                   </div>
-                              ))}
-                         </div>
                     </div>
                </Card>
 

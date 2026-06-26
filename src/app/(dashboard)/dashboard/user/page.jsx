@@ -58,7 +58,7 @@ export default function DashboardHome() {
 
                     {/* Quick Action Button */}
                     <Link
-                         href="/dashboard/add-lesson"
+                         href="/dashboard/user/add-lesson"
                          className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                     >
                          <Plus className="w-4 h-4" /> Share New Lesson

@@ -19,6 +19,7 @@ import { Button, Modal } from "@heroui/react";
 import { getLessons } from '@/lib/actions/get/lessons';
 import Image from 'next/image';
 import { updateFeaturedLessons } from '@/lib/actions/update/lesson';
+import { deleteReportedLesson } from '@/lib/actions/delete/lessons';
 
 export default function ManageLessonsPage() {
      const [lessons, setLessons] = useState([]);
@@ -43,9 +44,7 @@ export default function ManageLessonsPage() {
           fetchLessons();
      }, []);
 
-     // 📊 ২. ক্যালকুলেট স্ট্যাটস
      const publicCount = lessons.filter(l => l.visibility === 'public').length;
-     const privateCount = lessons.filter(l => l.visibility === 'private').length;
      const flaggedCount = lessons.filter(l => l.flags && l.flags.length > 0).length;
 
      const filteredLessons = lessons.filter(lesson => {
@@ -98,11 +97,19 @@ export default function ManageLessonsPage() {
           if (!selectedLesson) return;
           setLoading(true);
           try {
-               setLessons(prev => prev.filter(l => l._id !== selectedLesson._id));
-               toast.error(`"${selectedLesson.title}" has been deleted.`, {
-                    style: { background: '#18181b', color: '#fff', border: '1px solid #27272a' }
-               });
-               setSelectedLesson(null);
+               const data = await deleteReportedLesson(selectedLesson._id); 
+               if (data.success) {
+                    setLessons(prev => prev.filter(l => l._id !== selectedLesson._id));
+                    toast.success(`"${selectedLesson.title}" has been deleted.`, {
+                         style: { background: '#18181b', color: '#fff', border: '1px solid #27272a' }
+                    });
+                    setSelectedLesson(null);
+               }
+               else {
+                    toast.error("Failed to delete lesson.");
+               }
+
+
           } catch (err) {
                toast.error("Failed to delete lesson.");
           } finally {
@@ -127,20 +134,13 @@ export default function ManageLessonsPage() {
                </div>
 
                {/* 📊 STATS CARDS */}
-               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="bg-zinc-900/40 border border-zinc-800/80 p-5 rounded-2xl flex items-center justify-between">
                          <div>
-                              <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Public Lessons</p>
-                              <p className="text-2xl font-black text-emerald-400 mt-1">{publicCount}</p>
+                              <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">All Lessons</p>
+                              <p className="text-2xl font-black text-emerald-400 mt-1">{lessons.length}</p>
                          </div>
                          <Eye className="w-8 h-8 text-emerald-500/20" />
-                    </div>
-                    <div className="bg-zinc-900/40 border border-zinc-800/80 p-5 rounded-2xl flex items-center justify-between">
-                         <div>
-                              <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Private Lessons</p>
-                              <p className="text-2xl font-black text-zinc-400 mt-1">{privateCount}</p>
-                         </div>
-                         <EyeSlash className="w-8 h-8 text-zinc-500/20" />
                     </div>
                     <div className="bg-zinc-900/40 border border-zinc-800/80 border-rose-950/40 bg-rose-950/5 p-5 rounded-2xl flex items-center justify-between">
                          <div>
@@ -290,9 +290,9 @@ export default function ManageLessonsPage() {
                                                                  <Modal.Trigger
                                                                       onClick={() => setSelectedLesson(lesson)}
                                                                       title="Delete Lesson"
-                                                                      className="p-2 bg-zinc-950 border border-zinc-800 hover:border-rose-500/50 text-zinc-400 hover:text-rose-400 rounded-xl transition cursor-pointer inline-flex"
+                                                                      className="p-1 bg-zinc-950 border border-zinc-800 hover:border-rose-500/50 text-zinc-400 hover:text-rose-400 rounded-xl transition cursor-pointer flex items-center justify-center"
                                                                  >
-                                                                      <TrashBin className="w-4 h-4" />
+                                                                      <TrashBin className="w-4 h-4 flex justify-center items-center" />
                                                                  </Modal.Trigger>
 
                                                                  <Modal.Backdrop className="bg-black/70 backdrop-blur-xs">
