@@ -2,25 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
-import { Card, Chip } from "@heroui/react"; // keeping basics that work
+import { Card, Chip } from "@heroui/react"; 
 import { Sparkles, BookOpen, Heart, CloudArrowUpIn, TrashBin, Pencil } from "@gravity-ui/icons";
 import Image from "next/image";
 
 export default function ProfilePage() {
-     // Pure State for open/close toggle
      const [isModalOpen, setIsModalOpen] = useState(false);
 
-     // Fetch Better-Auth session info
      const { data: sessionData, isPending } = authClient.useSession();
 
      const user = sessionData?.user;
      const isPremium = user?.plan === "premium";
 
-     // Controlled inputs state
      const [tempName, setTempName] = useState("");
      const [tempAvatar, setTempAvatar] = useState("");
 
-     // Sync input states safely
      useEffect(() => {
           if (user) {
                setTempName(user.name || "");
@@ -42,7 +38,7 @@ export default function ProfilePage() {
      const handleSaveChanges = async () => {
           try {
                console.log("Submitting Profile update:", { name: tempName, image: tempAvatar });
-               setIsModalOpen(false); // Close modal 
+               setIsModalOpen(false);
           } catch (error) {
                console.error("Failed updating profile data:", error);
           }
@@ -173,7 +169,6 @@ export default function ProfilePage() {
                                    <h3 className="text-xl font-bold tracking-tight text-white">Edit Profile</h3>
                               </div>
 
-                              {/* Content Body (Strict Vanilla React Elements to block Dom prop warning drops) */}
                               <div className="py-4 px-6 space-y-5">
 
                                    {/* Name Block */}

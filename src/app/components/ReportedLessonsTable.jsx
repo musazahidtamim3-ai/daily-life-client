@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { TrashBin, Eye, Check, Xmark, TriangleExclamation } from '@gravity-ui/icons';
-import toast from 'react-hot-toast';
 import Image from 'next/image';
-import { deleteReportedLesson } from '@/lib/actions/delete/lessons';
+import { deleteReport, deleteReportedLesson } from '@/lib/actions/delete/lessons';
+import { toast } from 'react-toastify';
 
 export default function ReportedLessonsTable({ initialLessons }) {
      const [isLoading, setIsLoading] = useState(false);
@@ -22,8 +22,7 @@ export default function ReportedLessonsTable({ initialLessons }) {
 
                if (data?.success) {
                     toast.success("Lesson permanently removed");
-                    setLessons(prev => prev.filter(l => l.lessonId !== selectedLesson.lessonId));
-                    setIsOpen(false); 
+                    setLessons(prev => prev.filter(l => l && l.lessonId && l.lessonId !== selectedLesson.lessonId));                    setIsOpen(false); 
                } else {
                     toast.error(data?.error || "Failed to delete lesson");
                }
@@ -35,20 +34,24 @@ export default function ReportedLessonsTable({ initialLessons }) {
           }
      };
 
-     const handleIgnore = async (lessonId) => {
-          try {
-               const res = await fetch(`http://localhost:5000/api/lessons/report/${lessonId}`, {
-                    method: 'DELETE',
-               });
+     const handleIgnore = async (lesson) => {
+          if (!lesson) return;
 
-               if (res.ok) {
+          setIsLoading(true);
+          try {
+               const data = await deleteReport(lesson.lessonId);
+               if (data?.success) {
                     toast.success("Reports cleared. Lesson kept live.");
-                    setLessons(prev => prev.filter(l => l.lessonId !== lessonId));
+
+                    setLessons(prev => prev.filter(l => l && l.lessonId && l.lessonId !== lesson.lessonId));
+                    setIsOpen(false);
                } else {
                     toast.error("Failed to clear reports");
                }
           } catch (error) {
                toast.error("Failed to ignore reports");
+          } finally {
+               setIsLoading(false); 
           }
      };
 
@@ -71,7 +74,7 @@ export default function ReportedLessonsTable({ initialLessons }) {
                                    </tr>
                               </thead>
                               <tbody className="divide-y divide-zinc-800 text-sm">
-                                   {lessons.map((lesson) => (
+                                        {lessons.filter(l => l && l.lessonId).map((lesson) => (
                                         <tr key={lesson._id} className="hover:bg-zinc-800/30 transition">
                                              <td className="px-6 py-4 font-medium text-zinc-200 max-w-md truncate">
                                                   <div className="flex items-center gap-2">
@@ -101,7 +104,7 @@ export default function ReportedLessonsTable({ initialLessons }) {
                                              </td>
                                              <td className="px-6 py-4 text-right space-x-2">
                                                   <button
-                                                       onClick={() => handleIgnore(lesson.lessonId)}
+                                                       onClick={()=>handleIgnore(lesson)}
                                                        className="px-3 py-1.5 bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-400 border border-emerald-900/30 rounded-xl text-xs font-bold uppercase tracking-wider transition"
                                                   >
                                                        Ignore
