@@ -20,7 +20,6 @@ export default function ProfilePage() {
      const [isLessonsLoading, setIsLessonsLoading] = useState(true); 
 
      const { data: sessionData, isPending } = authClient.useSession();
-
      const user = sessionData?.user;
      const isPremium = user?.plan === "premium";
      const creatorId = user?.id; 

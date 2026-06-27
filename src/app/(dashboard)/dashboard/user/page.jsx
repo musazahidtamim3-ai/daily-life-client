@@ -1,18 +1,51 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { BookOpen, Heart, Flame, ArrowUpRight, Plus, Sparkles } from "@gravity-ui/icons";
+import { toast } from "react-toastify";
+import { serverFetch } from "@/lib/core/server";
+export const getLessonByUserId = async (creatorId) => {
+     return await serverFetch(`/api/my-lessons/${creatorId}`);
+}
 
 export default function DashboardHome() {
-     const { data: sessionData } = authClient.useSession();
-     const user = sessionData?.user;
+     const [userLessons, setUserLessons] = useState([]);
+     const [isLessonsLoading, setIsLessonsLoading] = useState(true); 
 
+     const { data: sessionData, isPending } = authClient.useSession();
+     const user = sessionData?.user;
+     const creatorId = user?.id;
+
+     useEffect(() => {
+          if (!isPending && !user) {
+               toast.error("User not found. Please log in.");
+          }
+     }, [user, isPending]);
+     
+useEffect(() => {
+          if (!creatorId) return;
+
+          const fetchUserLessons = async () => {
+               setIsLessonsLoading(true);
+               try {
+                    const lessons = await getLessonByUserId(creatorId);
+                    setUserLessons(lessons || []);
+               } catch (error) {
+                    console.error("Failed to fetch lessons:", error);
+               } finally {
+                    setIsLessonsLoading(false);
+               }
+          };
+
+          fetchUserLessons();
+}, [creatorId]);
+     
      const stats = [
           {
                label: "Lessons Contributed",
-               count: 14,
+               count: userLessons.length,
                icon: <BookOpen className="w-6 h-6 text-purple-400" />,
                glow: "shadow-[0_0_20px_rgba(168,85,247,0.15)] border-purple-500/20",
                barColor: "bg-purple-500"

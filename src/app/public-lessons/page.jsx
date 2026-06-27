@@ -7,28 +7,36 @@ import { authClient } from "@/lib/auth-client";
 import { getLessons } from "@/lib/actions/get/lessons";
 import { LessonCard } from "../components/LessonCard";
 
-
 export default function LessonsPage() {
      const [lessons, setLessons] = useState([]);
      const [loading, setLoading] = useState(true);
+
+     const [currentPage, setCurrentPage] = useState(1);
+     const [totalPages, setTotalPages] = useState(1);
+     const limit = 4;
 
      const { data: sessionData } = authClient.useSession();
      const user = sessionData?.user;
 
      useEffect(() => {
           async function loadLessons() {
+               setLoading(true);
                try {
-                    const data = await getLessons();
-                    const fallbackData = Array.isArray(data) ? data : data ? [data] : [];
+                    const response = await getLessons(currentPage, limit);
+                    const incomingData = response?.data || response;
+                    const fallbackData = Array.isArray(incomingData) ? incomingData : incomingData ? [incomingData] : [];
                     setLessons(fallbackData);
-               } catch (err) {
+                    setTotalPages(response?.meta?.totalPages || 1);
+               }
+               catch (err) {
                     console.error(err);
-               } finally {
+               }
+               finally {
                     setLoading(false);
                }
           }
           loadLessons();
-     }, []);
+     }, [currentPage]); 
 
      return (
           <div className="w-full min-h-screen bg-[#070709] text-white px-6 md:px-16 py-12">
@@ -48,8 +56,7 @@ export default function LessonsPage() {
 
                {/* Search + Selects */}
                <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-10 bg-[#0c0c10]/40 border border-neutral-900 p-4 rounded-2xl backdrop-blur-md">
-
-                    {/* Search */}
+                    {/* Search Input */}
                     <div className="space-y-1.5 w-full">
                          <label className="text-xs font-semibold text-neutral-400">Search</label>
                          <div className="relative flex items-center">
@@ -93,7 +100,6 @@ export default function LessonsPage() {
                               <option value="Sad" className="text-white bg-[#0c0c0e]">Sad</option>
                          </select>
                     </div>
-
                </div>
 
                {/* Loader / Grid / Empty */}
@@ -103,14 +109,56 @@ export default function LessonsPage() {
                          <p className="text-xs text-neutral-500 font-light tracking-wider animate-pulse">Loading lessons...</p>
                     </div>
                ) : lessons.length > 0 ? (
-                    <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                         {lessons.map((singleLesson) => (
-                              <LessonCard
-                                   key={singleLesson._id?.$oid || singleLesson._id}
-                                   lesson={singleLesson}
-                                   user={user}
-                              />
-                         ))}
+                    <div className="max-w-7xl mx-auto space-y-12">
+                         {/* Card Grid */}
+                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                              {lessons.map((singleLesson) => (
+                                   <LessonCard
+                                        key={singleLesson._id?.$oid || singleLesson._id}
+                                        lesson={singleLesson}
+                                        user={user}
+                                   />
+                              ))}
+                         </div>
+
+                         {totalPages > 1 && (
+                              <div className="flex items-center justify-center gap-2 pt-6 border-t border-neutral-900">
+                                   {/* Previous Button */}
+                                   <button
+                                        disabled={currentPage === 1}
+                                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                                        className="px-4 h-10 text-xs font-semibold rounded-xl border border-neutral-800 text-neutral-400 disabled:opacity-20 disabled:cursor-not-allowed hover:bg-[#0c0c10] hover:text-white transition-all duration-200"
+                                   >
+                                        Previous
+                                   </button>
+
+                                   {/* Page Numbers */}
+                                   {[...Array(totalPages)].map((_, index) => {
+                                        const pageNumber = index + 1;
+                                        return (
+                                             <button
+                                                  key={pageNumber}
+                                                  onClick={() => setCurrentPage(pageNumber)}
+                                                  className={`w-10 h-10 text-xs font-bold rounded-xl border transition-all duration-200 ${currentPage === pageNumber
+                                                            ? "bg-gradient-to-r from-purple-600 to-indigo-600 border-purple-500 text-white shadow-lg shadow-purple-500/20"
+                                                            : "border-neutral-800 text-neutral-400 hover:bg-[#0c0c10] hover:text-white"
+                                                       }`}
+                                             >
+                                                  {pageNumber}
+                                             </button>
+                                        );
+                                   })}
+
+                                   {/* Next Button */}
+                                   <button
+                                        disabled={currentPage === totalPages}
+                                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                                        className="px-4 h-10 text-xs font-semibold rounded-xl border border-neutral-800 text-neutral-400 disabled:opacity-20 disabled:cursor-not-allowed hover:bg-[#0c0c10] hover:text-white transition-all duration-200"
+                                   >
+                                        Next
+                                   </button>
+                              </div>
+                         )}
                     </div>
                ) : (
                     <div className="text-center py-20 text-neutral-500 text-sm font-light">
