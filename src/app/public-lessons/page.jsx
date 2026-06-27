@@ -151,7 +151,7 @@ export default function LessonsPage() {
                               ))}
                          </div>
 
-                         {totalPages >= 1 && (
+                         {totalPages > 1 && (
                               <div className="flex items-center justify-center gap-2 pt-6 border-t border-neutral-950">
                                    <button
                                         disabled={currentPage === 1}

@@ -3,21 +3,27 @@
 import React, { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import { Card, Chip } from "@heroui/react";
-import { Sparkles, BookOpen, Heart, CloudArrowUpIn, TrashBin, Pencil } from "@gravity-ui/icons";
+import { Sparkles, BookOpen, Heart, CloudArrowUpIn, Pencil } from "@gravity-ui/icons";
 import Image from "next/image";
 import { serverFetch } from "@/lib/core/server";
 import { toast } from "react-toastify";
+
+export const getSavedLessons = async (userId) => {
+     const res = await fetch(`http://localhost:5000/api/lessons/saved/${userId}`);
+     const json = await res.json();
+     return json.data || [];
+}
 
 export const getLessonByUserId = async (creatorId) => {
      return await serverFetch(`/api/my-lessons/${creatorId}`);
 }
 
 export default function ProfilePage() {
-          const [isSubmitting, setIsSubmitting] = useState(false);
-     
+     const [isSubmitting, setIsSubmitting] = useState(false);
      const [isModalOpen, setIsModalOpen] = useState(false);
      const [userLessons, setUserLessons] = useState([]);
      const [isLessonsLoading, setIsLessonsLoading] = useState(true); 
+     const [savedLessons, setSavedLessons] = useState([]);
 
      const { data: sessionData, isPending } = authClient.useSession();
      const user = sessionData?.user;
@@ -42,6 +48,9 @@ export default function ProfilePage() {
                try {
                     const lessons = await getLessonByUserId(creatorId);
                     setUserLessons(lessons || []);
+                    const savedLessons = await getSavedLessons(creatorId);
+                    setSavedLessons(savedLessons || []);
+                    console.log("savedLessons:", savedLessons);
                } catch (error) {
                     console.error("Failed to fetch lessons:", error);
                } finally {
@@ -54,7 +63,7 @@ export default function ProfilePage() {
 
      const stats = [
           { label: "Lessons Created", count: userLessons.length, icon: <BookOpen className="w-5 h-5 text-purple-400" /> },
-          { label: "Lessons Saved", count: 45, icon: <Heart className="w-5 h-5 text-pink-400" /> },
+          { label: "Lessons Saved", count: savedLessons.length, icon: <Heart className="w-5 h-5 text-pink-400" /> },
      ];
 
      const handleSaveChanges = async () => {
@@ -187,7 +196,7 @@ export default function ProfilePage() {
                                         </div>
                                         <div className="flex items-center justify-between pt-5 mt-4 border-t border-neutral-900">
                                              <span className="text-xs text-neutral-400 flex items-center gap-1.5">
-                                                  <Heart className="w-3.5 h-3.5 text-pink-500" /> {lesson.likesCount || 0} favorites
+                                                  <Heart className="w-3.5 h-3.5 text-pink-500" /> {lesson.likes.length || 0} Likes
                                              </span>
                                                   <button className="p-1.5 rounded-lg text-neutral-500 hover:text-white transition-colors"><Sparkles className="w-4 h-4" /></button>
                                                   

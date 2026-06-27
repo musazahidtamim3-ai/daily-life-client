@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {
      Eye, EyeSlash, Key, Lock, TrashBin,
-     Pencil, ChevronRight, Calendar, Heart, Bookmark
+     Pencil, Calendar, Heart, Bookmark
 } from '@gravity-ui/icons'; 
 
 export default function LessonsTable({ initialLessons, isUserPremium }) {
@@ -19,7 +19,7 @@ export default function LessonsTable({ initialLessons, isUserPremium }) {
           setLessons(prev => prev.map(l => l._id === id ? { ...l, visibility: updatedStatus } : l));
 
           try {
-               await fetch(`/api/lessons/${id}/status`, {
+               await fetch(`http://localhost:5000/api/lessons/${id}/status`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ visibility: updatedStatus })
@@ -32,7 +32,7 @@ export default function LessonsTable({ initialLessons, isUserPremium }) {
 
      const toggleAccess = async (id, currentAccess) => {
           if (!isUserPremium) {
-               alert("⚠️ Only Premium Members can toggle access level to Premium plans!");
+               alert("Only Premium Members can toggle access level to Premium plans!");
                return;
           }
 
@@ -99,12 +99,6 @@ export default function LessonsTable({ initialLessons, isUserPremium }) {
                                                        <span className="text-zinc-500 text-xs line-clamp-1">
                                                             {lesson.description || "No description provided."}
                                                        </span>
-                                                       <Link
-                                                            href={`/lessons/${lesson._id}`}
-                                                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-500 hover:text-blue-400 transition w-fit pt-1"
-                                                       >
-                                                            View Full Details <ChevronRight className="w-3 h-3" />
-                                                       </Link>
                                                   </div>
                                              </td>
 
@@ -152,15 +146,13 @@ export default function LessonsTable({ initialLessons, isUserPremium }) {
                                                   <div className="flex flex-col items-center gap-1.5 text-xs text-zinc-400">
                                                        <div className="flex items-center gap-4 bg-zinc-950/40 border border-zinc-800/80 px-2.5 py-1 rounded-lg">
                                                             <span className="flex items-center gap-1 text-rose-400">
-                                                                 <Heart className="w-3 h-3" /> {lesson.likesCount || 0}
+                                                                 <Heart className="w-3 h-3" /> {lesson.likes?.length || 0}
                                                             </span>
                                                             <span className="flex items-center gap-1 text-amber-400">
-                                                                 <Bookmark className="w-3 h-3" /> {lesson.savesCount || 0}
+                                                                 <Bookmark className="w-3 h-3" /> {lesson.saves?.length || 0}
                                                             </span>
                                                        </div>
-                                                       <span className="text-[10px] text-zinc-500 inline-flex items-center gap-1">
-                                                            <Calendar className="w-2.5 h-2.5" /> {new Date(lesson.createdAt).toLocaleDateString()}
-                                                       </span>
+                                                       
                                                   </div>
                                              </td>
 
@@ -168,7 +160,7 @@ export default function LessonsTable({ initialLessons, isUserPremium }) {
                                                   <div className="flex items-center justify-end gap-2">
 
                                                        <Link
-                                                            href={`/dashboard/my-lessons/update/${lesson._id}`}
+                                                            href={`/dashboard/user/my-lessons/update/${lesson._id}`}
                                                             className="p-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition border border-zinc-700/30"
                                                             title="Update Lesson"
                                                        >

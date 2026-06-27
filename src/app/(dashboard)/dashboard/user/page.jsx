@@ -6,6 +6,12 @@ import { authClient } from "@/lib/auth-client";
 import { BookOpen, Heart, Flame, ArrowUpRight, Plus, Sparkles } from "@gravity-ui/icons";
 import { toast } from "react-toastify";
 import { serverFetch } from "@/lib/core/server";
+import { Spinner } from "@heroui/react";
+export const getSavedLessons = async (userId) => {
+     const res = await fetch(`http://localhost:5000/api/lessons/saved/${userId}`);
+     const json = await res.json();
+     return json.data || [];
+}
 export const getLessonByUserId = async (creatorId) => {
      return await serverFetch(`/api/my-lessons/${creatorId}`);
 }
@@ -13,6 +19,7 @@ export const getLessonByUserId = async (creatorId) => {
 export default function DashboardHome() {
      const [userLessons, setUserLessons] = useState([]);
      const [isLessonsLoading, setIsLessonsLoading] = useState(true); 
+     const [savedLessons, setSavedLessons] = useState([]);
 
      const { data: sessionData, isPending } = authClient.useSession();
      const user = sessionData?.user;
@@ -32,6 +39,8 @@ useEffect(() => {
                try {
                     const lessons = await getLessonByUserId(creatorId);
                     setUserLessons(lessons || []);
+                    const savedLessons = await getSavedLessons(creatorId);
+                    setSavedLessons(savedLessons || []);
                } catch (error) {
                     console.error("Failed to fetch lessons:", error);
                } finally {
@@ -52,7 +61,7 @@ useEffect(() => {
           },
           {
                label: "Saved Revelations",
-               count: 28,
+               count: savedLessons.length,
                icon: <Heart className="w-6 h-6 text-pink-400" />,
                glow: "shadow-[0_0_20px_rgba(236,72,153,0.15)] border-pink-500/20",
                barColor: "bg-pink-500"
@@ -64,11 +73,6 @@ useEffect(() => {
                glow: "shadow-[0_0_20px_rgba(245,158,11,0.15)] border-amber-500/20",
                barColor: "bg-amber-500"
           },
-     ];
-
-     const recentLessons = [
-          { id: 1, title: "Embracing Mistakes in Your 20s", category: "Mistakes Learned", date: "2 mins ago", status: "Public" },
-          { id: 2, title: "How Silence Heals Burnout", category: "Mindset", date: "1 day ago", status: "Premium" },
      ];
 
      return (
@@ -111,7 +115,16 @@ useEffect(() => {
                                         {stat.icon}
                                    </div>
                               </div>
-                              <p className="text-4xl font-black mt-4 text-white tracking-tight">{stat.count}</p>
+                              {
+                                   isLessonsLoading ? (
+                                        <div className="w-full flex flex-col items-center justify-center py-2 gap-3">
+                                             <Spinner color="purple" size="lg" />
+                                             <p className="text-xs text-neutral-500 font-light tracking-wider animate-pulse">Loading insights...</p>
+                                        </div>
+                                   ) : (
+                                        <p className="text-4xl font-black mt-4 text-white tracking-tight">{stat.count}</p>
+                                   )
+                              }
 
                               {/* Animated Mini-Progress Bar for premium look */}
                               <div className="w-full h-[3px] bg-neutral-800 rounded-full mt-4 overflow-hidden">
@@ -128,27 +141,34 @@ useEffect(() => {
                     <div className="lg:col-span-2 rounded-2xl border border-neutral-800/80 bg-[#0c0c0e]/60 backdrop-blur-md p-6 shadow-xl">
                          <div className="flex items-center justify-between mb-6">
                               <h3 className="text-lg font-bold text-neutral-200 tracking-tight">Your Recent Insights</h3>
-                              <Link href="/dashboard/my-lessons" className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1 transition-colors">
+                              <Link href="/dashboard/user/my-lessons" className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1 transition-colors">
                                    View all <ArrowUpRight className="w-3 h-3" />
                               </Link>
                          </div>
 
                          <div className="space-y-4">
-                              {recentLessons.map((lesson) => (
-                                   <div key={lesson.id} className="flex items-center justify-between p-4 bg-neutral-900/30 hover:bg-neutral-900/60 border border-neutral-800/50 rounded-xl transition-all group">
-                                        <div className="flex flex-col min-w-0">
-                                             <h4 className="text-sm font-semibold text-white truncate group-hover:text-purple-400 transition-colors">{lesson.title}</h4>
-                                             <div className="flex items-center gap-3 mt-1.5 text-xs text-neutral-500">
-                                                  <span className="px-2 py-0.5 rounded-md bg-neutral-800 text-neutral-400">{lesson.category}</span>
-                                                  <span>•</span>
-                                                  <span>{lesson.date}</span>
-                                             </div>
-                                        </div>
-                                        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${lesson.status === "Premium" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" : "bg-purple-500/10 text-purple-400 border border-purple-500/20"}`}>
-                                             {lesson.status}
-                                        </span>
+                              {isLessonsLoading ? (
+                                   <div className="w-full flex flex-col items-center justify-center py-24 gap-3">
+                                        <Spinner color="purple" size="lg" />
+                                        <p className="text-xs text-neutral-500 font-light tracking-wider animate-pulse">Loading insights...</p>
                                    </div>
-                              ))}
+                              ) : (
+                                   userLessons.slice(-2).map((lesson) => (
+                                        <div key={lesson._id} className="flex items-center justify-between p-4 bg-neutral-900/30 hover:bg-neutral-900/60 border border-neutral-800/50 rounded-xl transition-all group">
+                                             <div className="flex flex-col min-w-0">
+                                                  <h4 className="text-sm font-semibold text-white truncate group-hover:text-purple-400 transition-colors">{lesson.title}</h4>
+                                                  <div className="flex items-center gap-3 mt-1.5 text-xs text-neutral-500">
+                                                       <span className="px-2 py-0.5 rounded-md bg-neutral-800 text-neutral-400">{lesson.category}</span>
+                                                       <span>•</span>
+                                                       <span>{new Date(lesson.createdAt).toLocaleDateString('en-GB')}</span>
+                                                  </div>
+                                             </div>
+                                             <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${lesson.accessLevel === "premium" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" : "bg-purple-500/10 text-purple-400 border border-purple-500/20"}`}>
+                                                  {lesson.accessLevel}
+                                             </span>
+                                        </div>
+                                   ))
+                              )}
                          </div>
                     </div>
 

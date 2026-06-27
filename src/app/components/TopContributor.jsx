@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import Image from "next/image"; // Next.js Image Component
+import Image from "next/image";
 
 export default function TopContributors() {
      const [contributors, setContributors] = useState([]);
@@ -30,7 +30,7 @@ export default function TopContributors() {
      };
 
      return (
-          <div className="w-full max-w-7xl mx-auto bg-zinc-950 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
+          <div className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
                <h2 className="text-xl font-black text-white tracking-tight mb-5 flex items-center gap-2">
                     🏆 Platform Top Contributors
                </h2>

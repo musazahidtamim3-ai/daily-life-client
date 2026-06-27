@@ -16,6 +16,14 @@ export const getFeaturedLessons = async () => {
      return await serverFetch("/api/lessons/featured");
 }
 
+export async function getMostSavedLessons() {
+     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/lessons/most-saved`, {
+          cache: 'no-store'
+     });
+     const json = await res.json();
+     return json.data?.slice(0, 2) || [];
+}
+
 export const getReportedLessons = async () => {
      const res = await fetch(`http://localhost:5000/api/lessons/report`);
      return res.json();

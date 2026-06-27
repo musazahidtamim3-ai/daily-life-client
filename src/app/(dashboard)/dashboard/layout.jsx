@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }) {
                { label: "Overview", href: "/dashboard/user", icon: <LayoutList className="w-5 h-5" /> },
                { label: "Add Lesson", href: "/dashboard/user/add-lesson", icon: <Plus className="w-5 h-5" /> },
                { label: "My Lessons", href: "/dashboard/user/my-lessons", icon: <BookOpen className="w-5 h-5" /> },
-               { label: "My Favorites", href: "/dashboard/user/my-favorites", icon: <Heart className="w-5 h-5" /> },
+               { label: "My Favourites", href: "/dashboard/user/my-favourites", icon: <Heart className="w-5 h-5" /> },
                { label: "Profile", href: "/dashboard/user/profile", icon: <Person className="w-5 h-5" /> },
           ];
 
