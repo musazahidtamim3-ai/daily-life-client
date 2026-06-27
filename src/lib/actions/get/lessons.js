@@ -1,7 +1,7 @@
 import { serverFetch } from "@/lib/core/server"
 
-export const getLessons = async (page = 1, limit = 4) => {
-     return await serverFetch(`/api/lessons?page=${page}&limit=${limit}`);
+export const getLessons = async (page = 1, limit = 4, search = "", category = "", emotionalTone = "") => {
+     return await serverFetch(`/api/lessons?page=${page}&limit=${limit}&search=${search}&category=${category}&emotionalTone=${emotionalTone}`);
 }
 
 export const getLessonById = async (lessonId) => {
