@@ -5,8 +5,10 @@ import { TrashBin, Eye, Check, Xmark, TriangleExclamation } from '@gravity-ui/ic
 import Image from 'next/image';
 import { deleteReport, deleteReportedLesson } from '@/lib/actions/delete/lessons';
 import { toast } from 'react-toastify';
+import { authClient } from '@/lib/auth-client';
 
 export default function ReportedLessonsTable({ initialLessons }) {
+     const { data: sessionData } = authClient.useSession();
      const [isLoading, setIsLoading] = useState(false);
      const [isOpen, setIsOpen] = useState(false);
      const [lessons, setLessons] = useState(initialLessons);

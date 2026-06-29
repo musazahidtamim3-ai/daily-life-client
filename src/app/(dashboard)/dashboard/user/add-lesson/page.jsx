@@ -17,7 +17,7 @@ const AddLessonPage = async () => {
      const userId = user.id;
      const userName = user.name;
      const userImage = user.image;
-     const isUserPremium = user.isPremium || false;
+     const isUserPremium = user.isPremium || user?.role === "admin" || false;
 
      return (
           <div className="w-full min-h-screen bg-zinc-950 text-zinc-50 p-6 md:p-10 select-none relative overflow-hidden">

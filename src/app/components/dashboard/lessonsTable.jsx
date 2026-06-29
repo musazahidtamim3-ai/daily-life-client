@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {
      Eye, EyeSlash, Key, Lock, TrashBin,
-     Pencil, Calendar, Heart, Bookmark
+     Pencil, Calendar, Heart, Bookmark,
+     ArrowRight
 } from '@gravity-ui/icons'; 
 
 export default function LessonsTable({ initialLessons, isUserPremium }) {
@@ -15,11 +16,10 @@ export default function LessonsTable({ initialLessons, isUserPremium }) {
      const toggleVisibility = async (id, currentStatus) => {
           const updatedStatus = currentStatus === 'public' ? 'private' : 'public';
 
-          
           setLessons(prev => prev.map(l => l._id === id ? { ...l, visibility: updatedStatus } : l));
 
           try {
-               await fetch(`http://localhost:5000/api/lessons/${id}/status`, {
+               await fetch(`https://daily-life-server.vercel.app/api/lessons/${id}/status`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ visibility: updatedStatus })
@@ -37,13 +37,14 @@ export default function LessonsTable({ initialLessons, isUserPremium }) {
           }
 
           const updatedAccess = currentAccess === 'premium' ? 'free' : 'premium';
-          setLessons(prev => prev.map(l => l._id === id ? { ...l, access: updatedAccess } : l));
+
+          setLessons(prev => prev.map(l => l._id === id ? { ...l, accessLevel: updatedAccess } : l));
 
           try {
-               await fetch(`/api/lessons/${id}/status`, {
+               await fetch(`https://daily-life-server.vercel.app/api/lessons/${id}/status`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ access: updatedAccess })
+                    body: JSON.stringify({ access: updatedAccess }) 
                });
           } catch (err) {
                console.error("Failed to update access level", err);
@@ -99,6 +100,11 @@ export default function LessonsTable({ initialLessons, isUserPremium }) {
                                                        <span className="text-zinc-500 text-xs line-clamp-1">
                                                             {lesson.description || "No description provided."}
                                                        </span>
+                                                       <Link href={`/public-lessons/${lesson._id}`} className="text-xs text-zinc-400 hover:text-zinc-200 transition">
+                                                            <span className='flex items-center gap-1 text-blue-500'>
+                                                                 See Details <ArrowRight className="w-3.5 h-3.5" />
+                                                            </span>
+                                                       </Link>
                                                   </div>
                                              </td>
 
@@ -124,13 +130,13 @@ export default function LessonsTable({ initialLessons, isUserPremium }) {
 
                                              <td className="py-4 px-5 text-center">
                                                   <button
-                                                       onClick={() => toggleAccess(lesson._id, lesson.access)}
-                                                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition cursor-pointer ${lesson.access === 'premium'
+                                                       onClick={() => toggleAccess(lesson._id, lesson.accessLevel)}
+                                                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition cursor-pointer ${lesson.accessLevel === 'premium'
                                                             ? 'bg-amber-500/10 border-amber-500/20 text-amber-400 hover:bg-amber-500/20'
                                                             : 'bg-blue-500/10 border-blue-500/20 text-blue-400 hover:bg-blue-500/20'
                                                             }`}
                                                   >
-                                                       {lesson.access === 'premium' ? (
+                                                       {lesson.accessLevel === 'premium' ? (
                                                             <>
                                                                  <Lock className="w-3.5 h-3.5" /> Premium
                                                             </>
@@ -150,6 +156,10 @@ export default function LessonsTable({ initialLessons, isUserPremium }) {
                                                             </span>
                                                             <span className="flex items-center gap-1 text-amber-400">
                                                                  <Bookmark className="w-3 h-3" /> {lesson.saves?.length || 0}
+                                                            </span>
+                                                            <span className="flex items-center gap-1 text-emerald-400">
+                                                                 <Calendar className="w-3 h-3" /> 
+                                                                 {new Date(lesson.createdAt).toLocaleDateString('en-GB')}
                                                             </span>
                                                        </div>
                                                        

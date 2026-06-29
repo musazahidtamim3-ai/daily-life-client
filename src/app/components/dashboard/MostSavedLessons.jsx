@@ -48,7 +48,7 @@ export default async function MostSavedLessons() {
                                         className={`flex items-center gap-4 p-4 rounded-2xl border ${config.border} ${config.bg} transition hover:bg-zinc-800/20 group`}
                                    >
                                         {/* Lesson Image */}
-                                        <div className="relative w-14 h-14 rounded-xl overflow-hidden border border-zinc-700/50 shrink-0">
+                                        <div className="hidden lg:flex relative w-20 h-14 rounded-xl overflow-hidden border border-zinc-700/50 shrink-0">
                                              {lesson.imageUrl ? (
                                                   <Image
                                                        src={lesson.imageUrl}

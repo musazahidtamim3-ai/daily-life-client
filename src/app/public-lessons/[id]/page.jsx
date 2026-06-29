@@ -8,7 +8,7 @@ import {
      Clock,
      ArrowRight
 } from '@gravity-ui/icons';
-import { getLessonById } from '@/lib/actions/get/lessons';
+import { getLessonById, getLessonByUserId } from '@/lib/actions/get/lessons';
 import Image from 'next/image';
 import { LessonInteractions } from '@/app/components/LessonsInteractions';
 import { CommentSection } from '@/app/components/commentSection';
@@ -28,8 +28,9 @@ const LessonDetailsPage = async ({ params }) => {
      }
 
      const user = await getUserSession();
-     const isPremiumUser = user?.isPremium;
+     const isPremiumUser = user?.isPremium === true || user?.role === "admin";
      const isAuthor = user?.id === lesson.creatorId;
+     const lessonsByCreator = await getLessonByUserId(lesson.creatorId);
 
      // ⭐ Premium Member Lock - Ultra Premium Glassmorphism View
      if (lesson.isPremium && !isPremiumUser && !isAuthor) {
@@ -104,7 +105,7 @@ const LessonDetailsPage = async ({ params }) => {
                          <div className="lg:col-span-2 space-y-10">
 
                               {/* 2. LESSON INFORMATION SECTION */}
-                              <article className="text-zinc-300 text-[17px] md:text-lg leading-relaxed font-normal whitespace-pre-line bg-zinc-900/20 border border-zinc-900/60 p-6 md:p-8 rounded-3xl shadow-sm">
+                              <article className="text-zinc-500 text-[15px] md:text-lg leading-relaxed font-normal whitespace-pre-line bg-zinc-900/20 border border-zinc-900/60 p-6 md:p-8 rounded-3xl shadow-sm">
                                    {lesson.description}
                               </article>
 
@@ -147,7 +148,7 @@ const LessonDetailsPage = async ({ params }) => {
                                    <div className="text-xs text-zinc-400 flex justify-between items-center bg-zinc-950 p-3 rounded-xl border border-zinc-900">
                                         <span>Published Portfolio</span>
                                         <span className="font-mono text-white font-bold bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
-                                             {lesson.creatorTotalLessons || 1}
+                                             {lessonsByCreator?.length || 1}
                                         </span>
                                    </div>
 

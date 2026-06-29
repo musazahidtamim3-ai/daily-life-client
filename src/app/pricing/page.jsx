@@ -6,30 +6,53 @@ import { Check, Xmark, CrownDiamond, ShieldCheck, Star, CirclePlus } from '@grav
 const PricingPage = () => {
      const [loading, setLoading] = useState(false);
      const handleCheckout = async (e) => {
-          e.preventDefault(); 
+
+          e.preventDefault();
+
           setLoading(true);
 
           try {
-               const formData = new FormData(e.currentTarget);
 
-               const response = await fetch('/api/checkout_sessions', { 
-                    method: 'POST',
-                    body: formData,
+               const response = await fetch("https://daily-life-server.vercel.app/api/checkout_sessions", {
+
+                    method: "POST",
+
+                    headers: {
+
+                         "Content-Type": "application/json",
+
+                    },
+
+                    body: JSON.stringify({ planId: "premium" }),
+
+                    credentials: "include",
+
                });
 
                const data = await response.json();
 
                if (data.url) {
+
                     window.location.href = data.url;
+
                } else {
+
                     alert(data.error || "Something went wrong during checkout.");
-                    setLoading(false);
+
                }
+
           } catch (err) {
-               console.error("Stripe Checkout Error:", err);
-               alert("Failed to initiate payment. Please try again.");
+
+               console.error(err);
+
+               alert("Failed to initiate payment.");
+
+          } finally {
+
                setLoading(false);
+
           }
+
      };
 
      const comparisonFeatures = [
@@ -90,11 +113,10 @@ const PricingPage = () => {
 
                               {/* HeroUI Button Integration */}
                               <form onSubmit={handleCheckout} className="mb-6">
-                                   <input type="hidden" name="planId" value="premium" />
                                    <Button
                                         type="submit"
                                         isLoading={loading}
-                                        disabled={loading} 
+                                        disabled={loading}
                                         className="w-full bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold h-14 rounded-2xl shadow-[0_4px_20px_rgba(99,102,241,0.4)] transition-all disabled:opacity-70"
                                         endContent={!loading && <CirclePlus size={18} />}
                                    >

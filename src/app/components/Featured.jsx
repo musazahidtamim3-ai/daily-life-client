@@ -1,11 +1,11 @@
 import React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Flame, Heart } from "@gravity-ui/icons";
 import { getFeaturedLessons } from '@/lib/actions/get/lessons';
 
 const FeaturedCards = async () => {
      const lessons = await getFeaturedLessons();
+     ;
      const featuredLessons = Array.isArray(lessons) ? lessons : [];
 
      if (featuredLessons.length === 0) return null;
@@ -32,7 +32,7 @@ const FeaturedCards = async () => {
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {featuredLessons.map((lesson) => {
                          const lessonId = lesson._id?.$oid || lesson._id;
-                         const isPremium = lesson.accessLevel === "premium";
+                         const isPremium = lesson.accessLevel === "premium" ;
 
                          return (
                               <div

@@ -1,9 +1,9 @@
 export const UpdateLikeCount = async (lessonId, currentUser) => {
      try {
-          const response = await fetch(`http://localhost:5000/api/lessons/${lessonId}/like`, {
+          const response = await fetch(`https://daily-life-server.vercel.app/api/lessons/${lessonId}/like`, {
                method: 'PATCH',
                headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                },
                body: JSON.stringify({ userId: currentUser.id }),
           });
@@ -17,10 +17,10 @@ export const UpdateLikeCount = async (lessonId, currentUser) => {
 
 export const UpdateSaveCount = async (lessonId, currentUser) => {
      try {
-          const response = await fetch(`http://localhost:5000/api/lessons/${lessonId}/save`, {
+          const response = await fetch(`https://daily-life-server.vercel.app/api/lessons/${lessonId}/save`, {
                method: 'PATCH',
                headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                },
                body: JSON.stringify({ userId: currentUser.id }),
           });
@@ -33,10 +33,10 @@ export const UpdateSaveCount = async (lessonId, currentUser) => {
 };
 
 export const addComment = async (lessonId, text, currentUser) => {
-     const res = await fetch(`http://localhost:5000/api/lessons/${lessonId}/comments`, {
+     const res = await fetch(`https://daily-life-server.vercel.app/api/lessons/${lessonId}/comments`, {
           method: 'POST',
           headers: {
-               'Content-Type': 'application/json',
+               'Content-Type': 'application/json'
           },
           body: JSON.stringify({
                userId: currentUser.id,
@@ -52,10 +52,10 @@ export const addComment = async (lessonId, text, currentUser) => {
 
 export const updateFeaturedLessons = async (lessonId, userId) => {
      try {
-          const response = await fetch(`http://localhost:5000/api/lessons/${lessonId}/featured`, {
+          const response = await fetch(`https://daily-life-server.vercel.app/api/lessons/${lessonId}/featured`, {
                method: 'PATCH',
                headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                },
                body: JSON.stringify({ userId }),
           });

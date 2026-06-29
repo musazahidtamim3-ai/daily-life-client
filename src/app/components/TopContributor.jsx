@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { MagicWand } from "@gravity-ui/icons";
 
 export default function TopContributors() {
      const [contributors, setContributors] = useState([]);
 
      useEffect(() => {
-          fetch("http://localhost:5000/api/top-contributors")
+          fetch("https://daily-life-server.vercel.app/api/top-contributors")
                .then((res) => res.json())
                .then((data) => {
                     if (data.success) {
@@ -32,7 +33,7 @@ export default function TopContributors() {
      return (
           <div className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
                <h2 className="text-xl font-black text-white tracking-tight mb-5 flex items-center gap-2">
-                    🏆 Platform Top Contributors
+                    <MagicWand className="w-5 h-5 text-amber-600" /> Top Contributors
                </h2>
 
                <div className="space-y-3">

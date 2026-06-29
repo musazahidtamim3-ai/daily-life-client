@@ -6,11 +6,13 @@ import { ArrowLeft, Clouds, Lock, CircleInfoFill } from '@gravity-ui/icons';
 import Link from 'next/link';
 import { submitLessons } from '@/lib/actions/submit/lessons';
 import { toast } from 'react-hot-toast';
+import { authClient } from '@/lib/auth-client';
 
 export default function CreateLessons({ userId, isUserPremium, userName, userImage }) {
      const router = useRouter();
      const [loading, setLoading] = useState(false);
 
+     const { data: sessionData } = authClient.useSession();
      const [formData, setFormData] = useState({
           title: '',
           description: '',
@@ -18,6 +20,7 @@ export default function CreateLessons({ userId, isUserPremium, userName, userIma
           emotionalTone: 'Motivational',
           image: '',
           access: 'free',
+          visibility: 'public',
      });
 
      const handleSubmit = async (e) => {
@@ -36,6 +39,7 @@ export default function CreateLessons({ userId, isUserPremium, userName, userIma
                emotionalTone: formData.emotionalTone,
                imageUrl: formData.image,       
                accessLevel: formData.access,  
+               visibility: formData.visibility,
                creatorId: userId, 
                creatorName: userName,
                creatorImage: userImage,
@@ -51,7 +55,7 @@ export default function CreateLessons({ userId, isUserPremium, userName, userIma
                const result = await submitLessons(payload);
 
                if (result?.success || result) {
-                    toast.success('🎉 Lesson Published Successfully!', {
+                    toast.success('Lesson Published Successfully!', {
                          duration: 3000,
                          style: {
                               background: '#18181b', 

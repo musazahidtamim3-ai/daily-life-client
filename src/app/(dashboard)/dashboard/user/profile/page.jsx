@@ -9,7 +9,7 @@ import { serverFetch } from "@/lib/core/server";
 import { toast } from "react-toastify";
 
 export const getSavedLessons = async (userId) => {
-     const res = await fetch(`http://localhost:5000/api/lessons/saved/${userId}`);
+     const res = await fetch(`https://daily-life-server.vercel.app/api/lessons/saved/${userId}`);
      const json = await res.json();
      return json.data || [];
 }
@@ -27,7 +27,7 @@ export default function ProfilePage() {
 
      const { data: sessionData, isPending } = authClient.useSession();
      const user = sessionData?.user;
-     const isPremium = user?.plan === "premium";
+     const isPremium = user?.isPremium === true || user?.role === "admin";
      const creatorId = user?.id; 
 
      const [tempName, setTempName] = useState("");
@@ -130,7 +130,7 @@ export default function ProfilePage() {
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2.5">
                                              <h2 className="text-2xl font-black text-white">{user.name}</h2>
                                              {isPremium && (
-                                                  <Chip color="warning" variant="flat" size="sm" className="font-bold border border-amber-500/20 bg-amber-500/10 text-amber-400">
+                                                  <Chip color="warning" variant="flat" size="sm" className="font-bold border border-amber-500/20 px-3 py-1 flex items-center justify-center bg-amber-500/10 text-amber-400">
                                                        Premium ⭐
                                                   </Chip>
                                              )}
@@ -181,27 +181,78 @@ export default function ProfilePage() {
                          <div className="text-sm text-neutral-500 py-4">You haven't published any lessons yet.</div>
                     ) : (
                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                              {userLessons.map((lesson) => (
-                                   <Card key={lesson._id || lesson.id} className="border border-neutral-800/80 bg-[#0c0c0e]/50 p-5 flex flex-col justify-between" shadow="none">
-                                        <div className="space-y-3">
-                                             <div className="flex items-center justify-between">
-                                                  <Chip size="sm" variant="flat" color="secondary" className="bg-purple-500/10 text-purple-400 font-mono text-[10px]">
-                                                       {lesson.category}
-                                                  </Chip>
-                                                  <span className="text-xs text-neutral-500 font-mono">
-                                                       {lesson.createdAt ? new Date(lesson.createdAt).toLocaleDateString() : "Recent"}
-                                                  </span>
-                                             </div>
-                                             <h4 className="text-base font-bold text-white tracking-tight line-clamp-2">{lesson.title}</h4>
-                                        </div>
-                                        <div className="flex items-center justify-between pt-5 mt-4 border-t border-neutral-900">
-                                             <span className="text-xs text-neutral-400 flex items-center gap-1.5">
-                                                  <Heart className="w-3.5 h-3.5 text-pink-500" /> {lesson.likes.length || 0} Likes
-                                             </span>
-                                                  <button className="p-1.5 rounded-lg text-neutral-500 hover:text-white transition-colors"><Sparkles className="w-4 h-4" /></button>
-                                                  
-                                        </div>
-                                   </Card>
+                              {userLessons.toReversed().map((lesson) => (
+                                   <div
+                                                                      key={lesson._id || lesson.id}
+                                                                      className="w-full bg-white/5 border border-white/10 rounded-3xl p-4 flex flex-col justify-between shadow-2xl"
+                                                                 >
+                                                                      {/* Top Image Area */}
+                                                                      <div className="relative w-full h-46 rounded-2xl overflow-hidden bg-neutral-900 ">
+                                                                           <Image
+                                                                                src={lesson.imageUrl || "https://images.unsplash.com/photo-1454649978226-6dd578c28449"}
+                                                                                alt={lesson.title}
+                                                                                height={100}
+                                                                                width={200}
+                                                                                className="w-full h-full object-cover"
+                                                                           />
+                                                                      </div>
+                                   
+                                                                      {/* Card Content & Mid Section */}
+                                                                      <div className="flex-1 flex flex-col pt-5 px-1 space-y-4">
+                                   
+                                                                           {/* Badges row: Category, Tone & Moved AccessLevel */}
+                                                                           <div className="flex flex-wrap items-center gap-2">
+                                                                                <span className="bg-purple-950/40 border border-purple-900/60 text-purple-400 text-[11px] font-semibold px-3 py-1 rounded-full">
+                                                                                     {lesson.category}
+                                                                                </span>
+                                                                                <span className="bg-neutral-900 border border-neutral-800 text-neutral-400 text-[11px] font-semibold px-3 py-1 rounded-full">
+                                                                                     {lesson.emotionalTone}
+                                                                                </span>
+                                                                           </div>
+                                   
+                                                                           {/* Title & Description Preview */}
+                                                                           <div className="space-y-2">
+                                                                                <div className="flex items-center gap-2">
+                                                                                     <h3 className="text-xl font-extrabold text-white tracking-tight line-clamp-1">
+                                                                                          {lesson.title}
+                                                                                     </h3>
+                                                                                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border tracking-wide uppercase ${isPremium
+                                                                                          ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
+                                                                                          : "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                                                                                          }`}>
+                                                                                          {lesson.accessLevel || 'free'}
+                                                                                     </span>
+                                                                                </div>
+                                                                                <p className="text-xs text-neutral-400 font-light leading-relaxed line-clamp-3">
+                                                                                     {lesson.description}
+                                                                                </p>
+                                                                           </div>
+                                                                      </div>
+                                   
+                                                                      {/* Inner Bottom Box (Creator Info & Action Button) */}
+                                                                      <div className=" mt-2 rounded-2xl p-3 flex items-center justify-between">
+                                                                           {/* Creator Info */}
+                                                                           <div className="flex items-center gap-2.5 min-w-0 flex-1 pr-2">
+                                                                                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-neutral-800 bg-neutral-900 flex-shrink-0">
+                                                                                     <Image
+                                                                                          src={lesson.creatorImage || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"}
+                                                                                          alt={lesson.creatorName || "Creator"}
+                                                                                          fill
+                                                                                          sizes="32px"
+                                                                                          className="object-cover"
+                                                                                     />
+                                                                                </div>
+                                                                                <p className="text-sm font-medium text-neutral-300 truncate">
+                                                                                     {lesson.creatorName || lesson.userName || "Jahidul Islam"}
+                                                                                </p>
+                                                                           </div>
+                                   
+                                                                           <div className="flex items-center gap-1.5 text-sm text-rose-400">
+                                                                                <Heart className="w-3 h-3 fill-rose-500/10" /> {lesson.likes.length || 0} Likes
+                                                                           </div>
+                                                                      </div>
+                                   
+                                                                 </div>
                               ))}
                          </div>
                     )}

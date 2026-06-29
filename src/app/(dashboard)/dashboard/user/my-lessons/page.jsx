@@ -16,8 +16,7 @@ const MyLessonsPage = async () => {
      }
 
      const creatorId = user.id;
-     const isUserPremium = user.isPremium || false;
-
+     const isUserPremium = user.isPremium || user?.role==="admin" || false;
      const myLessons = await getLessonByUserId(creatorId);
 
      return (

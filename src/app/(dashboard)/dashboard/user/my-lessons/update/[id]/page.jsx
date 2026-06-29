@@ -13,5 +13,5 @@ export default async function UpdateLessonPage({ params }) {
 
      const lesson = await res.json();
 
-     return <LessonUpdateForm lesson={lesson} isUserPremium={user.isPremium} />;
+     return <LessonUpdateForm lesson={lesson} isUserPremium={user.isPremium || user?.role === "admin"} />;
 }

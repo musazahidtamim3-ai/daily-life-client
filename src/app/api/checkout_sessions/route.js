@@ -29,7 +29,7 @@ export async function POST(request) {
                mode: 'payment',
                metadata: {
                     planId,
-                    userEmail: user.email 
+                    userEmail: user.email ,
                },
                success_url: `${origin}/pricing/success?session_id={CHECKOUT_SESSION_ID}`,
                cancel_url: `${origin}/pricing`,

@@ -7,50 +7,70 @@ import { BookOpen, Heart, Flame, ArrowUpRight, Plus, Sparkles } from "@gravity-u
 import { toast } from "react-toastify";
 import { serverFetch } from "@/lib/core/server";
 import { Spinner } from "@heroui/react";
+import { ResponsiveContainer, AreaChart, Area, XAxis, Tooltip } from "recharts";
+
 export const getSavedLessons = async (userId) => {
-     const res = await fetch(`http://localhost:5000/api/lessons/saved/${userId}`);
+     const res = await fetch(`https://daily-life-server.vercel.app/api/lessons/saved/${userId}`);
      const json = await res.json();
      return json.data || [];
 }
+
 export const getLessonByUserId = async (creatorId) => {
      return await serverFetch(`/api/my-lessons/${creatorId}`);
 }
 
+export const getAnalyticsData = async (userId) => {
+     try {
+          const res = await fetch(`https://daily-life-server.vercel.app/api/analytics/${userId}`);
+          const json = await res.json(); 
+          if (json && json.data) {
+               return Array.isArray(json.data) ? json.data : [];
+          }
+          return Array.isArray(json) ? json : [];
+     } catch (error) {
+          console.error("Analytics fetch failed:", error);
+          return [];
+     }
+}
+
 export default function DashboardHome() {
      const [userLessons, setUserLessons] = useState([]);
-     const [isLessonsLoading, setIsLessonsLoading] = useState(true); 
+     const [isLessonsLoading, setIsLessonsLoading] = useState(true);
      const [savedLessons, setSavedLessons] = useState([]);
+     const [analyticsData, setAnalyticsData] = useState([]);
 
-     const { data: sessionData, isPending } = authClient.useSession();
-     const user = sessionData?.user;
-     const creatorId = user?.id;
+     const { data, isPending } = authClient.useSession();
+     const user = data?.user || data;
+     const creatorId = user?.id || user?._id;
 
      useEffect(() => {
           if (!isPending && !user) {
                toast.error("User not found. Please log in.");
           }
      }, [user, isPending]);
-     
-useEffect(() => {
+
+     useEffect(() => {
           if (!creatorId) return;
 
-          const fetchUserLessons = async () => {
+          const fetchDashboardData = async () => {
                setIsLessonsLoading(true);
                try {
                     const lessons = await getLessonByUserId(creatorId);
                     setUserLessons(lessons || []);
-                    const savedLessons = await getSavedLessons(creatorId);
-                    setSavedLessons(savedLessons || []);
+                    const saved = await getSavedLessons(creatorId);
+                    setSavedLessons(saved || []);
+                    const analytics = await getAnalyticsData(creatorId);
+                    setAnalyticsData(analytics);
                } catch (error) {
-                    console.error("Failed to fetch lessons:", error);
+                    console.error("Failed to fetch dashboard data:", error);
                } finally {
                     setIsLessonsLoading(false);
                }
           };
 
-          fetchUserLessons();
-}, [creatorId]);
-     
+          fetchDashboardData();
+     }, [creatorId]);
+
      const stats = [
           {
                label: "Lessons Contributed",
@@ -93,7 +113,6 @@ useEffect(() => {
                          <p className="text-neutral-400 text-sm mt-1">Your personal dashboard for life reflections and growth.</p>
                     </div>
 
-                    {/* Quick Action Button */}
                     <Link
                          href="/dashboard/user/add-lesson"
                          className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
@@ -102,7 +121,7 @@ useEffect(() => {
                     </Link>
                </div>
 
-               {/* Stats Grid with Neon Glow Borders */}
+               {/* Stats Grid */}
                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 relative z-10">
                     {stats.map((stat, i) => (
                          <div
@@ -115,18 +134,15 @@ useEffect(() => {
                                         {stat.icon}
                                    </div>
                               </div>
-                              {
-                                   isLessonsLoading ? (
-                                        <div className="w-full flex flex-col items-center justify-center py-2 gap-3">
-                                             <Spinner color="purple" size="lg" />
-                                             <p className="text-xs text-neutral-500 font-light tracking-wider animate-pulse">Loading insights...</p>
-                                        </div>
-                                   ) : (
-                                        <p className="text-4xl font-black mt-4 text-white tracking-tight">{stat.count}</p>
-                                   )
-                              }
+                              {isLessonsLoading ? (
+                                   <div className="w-full flex flex-col items-center justify-center py-2 gap-3">
+                                        <Spinner color="purple" size="lg" />
+                                        <p className="text-xs text-neutral-500 font-light tracking-wider animate-pulse">Loading insights...</p>
+                                   </div>
+                              ) : (
+                                   <p className="text-4xl font-black mt-4 text-white tracking-tight">{stat.count}</p>
+                              )}
 
-                              {/* Animated Mini-Progress Bar for premium look */}
                               <div className="w-full h-[3px] bg-neutral-800 rounded-full mt-4 overflow-hidden">
                                    <div className={`h-full ${stat.barColor} w-2/3 rounded-full animate-pulse`} />
                               </div>
@@ -134,10 +150,10 @@ useEffect(() => {
                     ))}
                </div>
 
-               {/* Bottom Section: Recent Activities & Quote Block */}
+               {/* Bottom Section */}
                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
 
-                    {/* Left: Beautiful List of Recent Lessons */}
+                    {/* Left: Recent Lessons */}
                     <div className="lg:col-span-2 rounded-2xl border border-neutral-800/80 bg-[#0c0c0e]/60 backdrop-blur-md p-6 shadow-xl">
                          <div className="flex items-center justify-between mb-6">
                               <h3 className="text-lg font-bold text-neutral-200 tracking-tight">Your Recent Insights</h3>
@@ -172,25 +188,55 @@ useEffect(() => {
                          </div>
                     </div>
 
-                    {/* Right: Premium "Quote of the Day / System Card" */}
+                    {/* Right: Analytics Chart Card */}
                     <div className="flex flex-col justify-between rounded-2xl border border-neutral-800/80 bg-gradient-to-b from-[#121215] to-[#0c0c0e] p-6 shadow-xl relative overflow-hidden group">
-                         {/* Border Top Accent line */}
                          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-purple-500 via-indigo-500 to-pink-500" />
 
                          <div>
-                              <span className="text-[10px] font-mono tracking-widest text-neutral-500 uppercase block mb-3">Daily Reflection</span>
-                              <p className="text-sm text-neutral-300 italic leading-relaxed font-light">
-                                   "We don't learn from experience... we learn from reflecting on experience."
-                              </p>
-                              <p className="text-xs text-purple-400 font-medium mt-3 not-italic">— John Dewey</p>
+                              <span className="text-[10px] font-mono tracking-widest text-neutral-500 uppercase block mb-1">Weekly Activity</span>
+                              <h3 className="text-base font-bold text-neutral-200 tracking-tight mb-4">Lessons Overview</h3>
+
+                              <div className="w-full h-32 mt-2">
+                                   {isLessonsLoading ? (
+                                        <div className="w-full h-full flex items-center justify-center">
+                                             <Spinner color="purple" size="sm" />
+                                        </div>
+                                   ) : (
+                                        <ResponsiveContainer width="100%" height="100%">
+                                             <AreaChart data={analyticsData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                                                  <XAxis dataKey="name" stroke="#525252" fontSize={10} tickLine={false} axisLine={false} />
+                                                  <Tooltip
+                                                       contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', borderRadius: '8px' }}
+                                                       labelStyle={{ color: '#a3a3a3', fontSize: '11px' }}
+                                                       itemStyle={{ color: '#c084fc', fontSize: '11px' }}
+                                                  />
+                                                  <Area type="monotone" dataKey="created" stroke="#a855f7" fillOpacity={0.2} fill="url(#colorCreated)" strokeWidth={2} name="Created" />
+                                                  <Area type="monotone" dataKey="saved" stroke="#ec4899" fillOpacity={0.1} fill="url(#colorSaved)" strokeWidth={1.5} name="Saved" />
+
+                                                  <defs>
+                                                       <linearGradient id="colorCreated" x1="0" y1="0" x2="0" y2="1">
+                                                            <stop offset="5%" stopColor="#a855f7" stopOpacity={0.3} />
+                                                            <stop offset="95%" stopColor="#a855f7" stopOpacity={0} />
+                                                       </linearGradient>
+                                                       <linearGradient id="colorSaved" x1="0" y1="0" x2="0" y2="1">
+                                                            <stop offset="5%" stopColor="#ec4899" stopOpacity={0.2} />
+                                                            <stop offset="95%" stopColor="#ec4899" stopOpacity={0} />
+                                                       </linearGradient>
+                                                  </defs>
+                                             </AreaChart>
+                                        </ResponsiveContainer>
+                                   )}
+                              </div>
                          </div>
 
-                         <div className="mt-8 pt-4 border-t border-neutral-800/60 space-y-2">
+                         <div className="mt-6 pt-4 border-t border-neutral-800/60 space-y-2">
                               <div className="flex justify-between text-xs text-neutral-400">
                                    <span>Account Status</span>
-                                   {
-                                        user?.isPremium === true ? <span className="text-amber-400 font-semibold flex items-center gap-1">Premium ⭐</span> : <span className="text-blue-400 font-semibold flex items-center gap-1">Free</span>
-                                   }
+                                   {user?.isPremium === true || user?.role === "admin" ? (
+                                        <span className="text-amber-400 font-semibold flex items-center gap-1">Premium ⭐</span>
+                                   ) : (
+                                        <span className="text-blue-400 font-semibold flex items-center gap-1">Free</span>
+                                   )}
                               </div>
                               <div className="w-full bg-neutral-900 rounded-lg p-2.5 border border-neutral-800 text-[11px] text-neutral-500 text-center">
                                    🚀 Keep writing. You are in the top 5% creators this week!

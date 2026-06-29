@@ -36,7 +36,6 @@ export default function PlatformSlider() {
           emblaApi.on("select", onSelect);
      }, [emblaApi, onSelect]);
 
-     // স্লাইডার ডেটা (imageSrc তে আপনার ইমেজের লিঙ্ক বসিয়ে দেবেন)
      const slides = [
           {
                badge: "Welcome to Digital Life Lessons",
@@ -83,7 +82,6 @@ export default function PlatformSlider() {
                                    key={index}
                                    className="flex-[0_0_100%] min-w-0 relative"
                               >
-                                   {/* ১. পুরো স্লাইডার জুড়ে ব্যাকগ্রাউন্ড ইমেজ */}
                                    <div className="absolute inset-0 w-full h-full z-0">
                                         {slide.imageSrc ? (
                                              <Image
@@ -92,19 +90,16 @@ export default function PlatformSlider() {
                                                   fill
                                                   priority={index === 0}
                                                   className="object-cover"
-                                                  sizes="(max-w-1200px) 100vw, 1200px"
+                                                  sizes="(max-w-1900px) 100vw, 1200px"
                                              />
                                         ) : (
-                                             // ইমেজ না থাকলে ব্যাকআপ হিসেবে ডার্ক গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড
                                              <div className="w-full h-full bg-gradient-to-br from-purple-950/30 via-neutral-950 to-neutral-950" />
                                         )}
 
-                                        {/* ২. হালকা ডার্ক ওভারলে (Overlay) যাতে লেখাগুলো ক্লিয়ারলি পড়া যায় */}
                                         <div className="absolute inset-0 bg-black/10 md:bg-gradient-to-r md:from-black/30 md:via-black/20 md:to-black/30 backdrop-blur-[1px]" />
                                    </div>
 
-                                   {/* ৩. ইমেজের উপর টেক্সট এবং বাটনের কন্টেন্ট ফ্রেম */}
-                                   <div className="relative w-full min-h-[460px] md:min-h-[500px] p-8 md:p-20 flex flex-col justify-center items-start z-10">
+]                                   <div className="relative w-full min-h-[460px] md:min-h-[500px] p-8 md:p-20 flex flex-col justify-center items-start z-10">
                                         <div className="max-w-xl space-y-6 text-left">
 
                                              {/* ব্যাজ */}

@@ -25,7 +25,7 @@ export default async function Success({ searchParams }) {
      if (status === 'complete') {
           const subsInfo = {
                email: metadata.userEmail,
-               planId: metadata.planId
+               planId: metadata.planId,
           }
 
           const result = await createSubscription(subsInfo);

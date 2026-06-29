@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Bars, Xmark, Person, Folder, ArrowShapeRightFromLine } from "@gravity-ui/icons";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 
 export default function Navbar() {
      const pathname = usePathname();
@@ -31,7 +31,7 @@ export default function Navbar() {
      const navLinks = [
           { label: "Home", href: "/" },
           { label: "Public Lessons", href: "/public-lessons" },
-          ...(isLoggedIn && user?.isPremium === false ? [{ label: "Pricing", href: "/pricing" }] : []),
+          ...(isLoggedIn && user?.isPremium === false && user?.role === "user" ? [{ label: "Pricing", href: "/pricing" }] : []),
      ];
 
      useEffect(() => {
@@ -103,7 +103,7 @@ export default function Navbar() {
                          </div>
 
                          <div className="flex items-center gap-4 ">
-                              {isLoggedIn ? user?.isPremium === true ? (
+                              {isLoggedIn ? user?.isPremium === true || user?.role === "admin" ? (
                                    <span className="hidden lg:inline-flex items-center gap-2 bg-linear-to-r from-amber-500 to-yellow-500 text-neutral-950 px-3 py-1.5 text-xs font-black rounded-full shadow-[0_0_15px_rgba(245,158,11,0.4)] border border-amber-400 animate-in fade-in duration-200 select-none uppercase tracking-wide">
                                         <svg
                                              xmlns="http://www.w3.org/2000/svg"
@@ -147,7 +147,7 @@ export default function Navbar() {
                                                   <Image
                                                        height={30}
                                                        width={30}
-                                                       className={`h-7 w-7 rounded-full object-cover border ${user?.isPremium === true ? "border-amber-400" : "border-neutral-700"}`}
+                                                       className={`h-7 w-7 rounded-full object-cover border ${user?.isPremium === true || user.role === "admin" ? "border-amber-400" : "border-neutral-700"}`}
                                                        src={user?.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb"}
                                                        alt={user?.name || "User Avatar"}
                                                   />
@@ -172,7 +172,7 @@ export default function Navbar() {
                                                             <div className="flex flex-col min-w-0">
                                                                  <p className="truncate text-sm font-semibold text-white">{user?.name}</p>
                                                                  <p className={`text-[11px] font-medium tracking-wide uppercase ${user?.plan === "premium" ? "text-amber-400" : "text-neutral-400"}`}>
-                                                                      {user?.isPremium===true ? "Premium Member" : "Free Member"}
+                                                                      {user?.isPremium===true || user.role === "admin" ? "Premium Member" : "Free Member"}
                                                                  </p>
                                                             </div>
                                                        </div>
@@ -200,13 +200,13 @@ export default function Navbar() {
                                    <Image
                                         height={45}
                                         width={45}
-                                        className={`h-11 w-11 rounded-full object-cover border-2 ${user?.isPremium === true ? "border-amber-400" : "border-neutral-700"}`}
+                                        className={`h-11 w-11 rounded-full object-cover border-2 ${user?.isPremium === true || user.role === "admin" ? "border-amber-400" : "border-neutral-700"}`}
                                         src={user?.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb"}
                                         alt=""
                                    />
                                    <div className="flex flex-col gap-2">
                                         <p className="text-sm ">{user.name}</p>
-                                        {isLoggedIn ? user?.isPremium === true ? (
+                                        {isLoggedIn ? user?.isPremium === true || user.role === "admin" ? (
                                              <span className="inline-flex items-center gap-2 bg-linear-to-r from-amber-500 to-yellow-500 text-neutral-950 px-3 py-1.5 text-xs font-black rounded-full shadow-[0_0_15px_rgba(245,158,11,0.4)] border border-amber-400 animate-in fade-in duration-200 select-none uppercase tracking-wide">
                                                   <svg
                                                        xmlns="http://www.w3.org/2000/svg"

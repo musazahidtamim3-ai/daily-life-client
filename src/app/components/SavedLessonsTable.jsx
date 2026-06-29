@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Heart, Bookmark, TrashBin } from '@gravity-ui/icons';
+import { Heart, Bookmark, TrashBin, ArrowChevronRight } from '@gravity-ui/icons';
+import Link from 'next/link';
 
 export default function SavedLessonsTable({ initialLessons, userId }) {
      const [lessons, setLessons] = useState(initialLessons || []);
@@ -58,6 +59,9 @@ export default function SavedLessonsTable({ initialLessons, userId }) {
                                                        <span className="text-zinc-500 text-xs line-clamp-1">
                                                             {lesson.description || "No description provided."}
                                                        </span>
+                                                       <Link href={`/public-lessons/${lesson._id}`}>
+                                                       <span className="text-blue-500 flex items-center gap-1">See Details <ArrowChevronRight className="w-3 h-3" /></span>
+                                                       </Link>
                                                   </div>
                                              </td>
 

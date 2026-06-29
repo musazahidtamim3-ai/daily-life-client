@@ -1,23 +1,31 @@
 "use client";
 
 import React from "react";
-import { Card, CardHeader, Avatar, Button, Chip } from "@heroui/react";
-import { Lock, Eye, Calendar } from "@gravity-ui/icons";
+import { Card, CardHeader, Button, Chip } from "@heroui/react";
+import { Lock, Eye} from "@gravity-ui/icons";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export function LessonCard({ lesson, user }) {
      if (!lesson) return null;
 
      const { title, description, category, emotionalTone, imageUrl, accessLevel, creatorName, creatorImage } = lesson;
 
-     const isUserPremium = user?.isPremium === true;
+     const isUserPremium = user?.isPremium === true || user?.role === "admin";
      const isLessonPremium = accessLevel === "premium";
      const isLocked = isLessonPremium && !isUserPremium;
 
      return (
-          <Card className="w-full bg-[#0c0c10]/90 border border-neutral-900 rounded-2xl overflow-hidden hover:border-purple-500/40 transition-all duration-300 group flex flex-col justify-between shadow-xl relative">
+          <motion.div
+               initial={{ opacity: 0, y: 50 }} 
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: false, amount: 0.2 }}
 
+               whileHover={{ y: -10 }}
+                   
+               className="w-full bg-white/5 border border-white/15 rounded-xl overflow-hidden hover:border-purple-500/40 group flex flex-col justify-between shadow-xl relative"
+          >
                {isLocked && (
                     <div className="absolute inset-0 bg-[#070709]/85 backdrop-blur-sm z-30 flex flex-col items-center justify-center p-4 text-center">
                          <div className="w-10 h-10 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-2 shadow-lg animate-pulse">
@@ -26,7 +34,11 @@ export function LessonCard({ lesson, user }) {
                          <h4 className="text-white font-bold text-sm">Premium Content</h4>
                          <p className="text-neutral-400 text-[11px] font-light max-w-[160px] mt-0.5">Upgrade your account to unlock.</p>
                          {
-                              !user ? <Link href={'/auth/login'}><Button size="sm" className="mt-3 font-bold bg-linear-to-r from-amber-500 to-amber-400 text-black hover:bg-amber-400 text-xs rounded-lg h-8">Upgrade</Button></Link> : <Link href={'/pricing'}><Button size="sm" className="mt-3 font-bold bg-amber-500 text-black hover:bg-amber-400 text-xs rounded-lg h-8">Upgrade</Button></Link>
+                              !user ? (
+                                   <Link href={'/auth/login'}><Button size="sm" className="mt-3 font-bold bg-linear-to-r from-amber-500 to-amber-400 text-black hover:bg-amber-400 text-xs rounded-lg h-8">Upgrade</Button></Link>
+                              ) : (
+                                   <Link href={'/pricing'}><Button size="sm" className="mt-3 font-bold bg-amber-500 text-black hover:bg-amber-400 text-xs rounded-lg h-8">Upgrade</Button></Link>
+                              )
                          }
                     </div>
                )}
@@ -39,7 +51,7 @@ export function LessonCard({ lesson, user }) {
                                    width={200}
                                    src={imageUrl}
                                    alt={title}
-                                   className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${isLocked ? "blur-sm" : ""}`}
+                                   className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-lg ${isLocked ? "blur-sm" : ""}`}
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c10] to-transparent" />
                               <div className="absolute top-3 right-3 z-20">
@@ -75,7 +87,7 @@ export function LessonCard({ lesson, user }) {
                <div className="p-3 mx-3 mb-3 flex items-center justify-between border-t border-neutral-900/60 bg-[#121217]/50 rounded-xl mt-3">
                     <div className="flex items-center gap-2">
                          <Image src={creatorImage || 'https://i.pravatar.cc/150?img=33'} alt={creatorName || 'Jahidul Islam'} width={30} height={30} className="w-6 h-6 rounded-full border border-neutral-800" />
-                              <span className="text-sm font-medium text-neutral-300 leading-none">{creatorName||'Jahidul Islam'}</span>    
+                         <span className="text-sm font-medium text-neutral-300 leading-none">{creatorName || 'Jahidul Islam'}</span>
                     </div>
                     <Link href={`/public-lessons/${lesson._id}`}>
                          <Button
@@ -88,6 +100,6 @@ export function LessonCard({ lesson, user }) {
                          </Button>
                     </Link>
                </div>
-          </Card>
+          </motion.div>
      );
 }

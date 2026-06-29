@@ -8,7 +8,7 @@ export default async function MyFavouritesPage() {
      console.log("session:", JSON.stringify(session));
 
 
-     const res = await fetch(`http://localhost:5000/api/lessons/saved/${userId}`);
+     const res = await fetch(`https://daily-life-server.vercel.app/api/lessons/saved/${userId}`);
 
      const { data: savedLessons } = await res.json();
      console.log(savedLessons);

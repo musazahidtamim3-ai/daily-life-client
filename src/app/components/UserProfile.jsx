@@ -5,7 +5,7 @@ import { BookOpen, Heart } from '@gravity-ui/icons';
 import React from 'react';
 
 const UserProfile = async () => {
-     const user = await getUserSession();
+     const {user} = await getUserSession();
 
      if (!user) {
           return redirect('/login');

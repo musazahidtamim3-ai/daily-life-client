@@ -5,9 +5,11 @@ export const submitLessons = async (newLessonData) => {
 }
 
 export const reportLesson = async ({lessonId, lessonTitle, lessonImageUrl, reason, reporterUserId, reporterEmail, createdAt}) => {
-     const res = await fetch(`http://localhost:5000/api/lessons/report`, {
+     const res = await fetch(`https://daily-life-server.vercel.app/api/lessons/report`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+               'Content-Type': 'application/json'
+          },
           body: JSON.stringify({
                lessonId, lessonTitle,lessonImageUrl, reason, reporterUserId, reporterEmail, createdAt
           })

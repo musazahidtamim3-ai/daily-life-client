@@ -25,6 +25,6 @@ export async function getMostSavedLessons() {
 }
 
 export const getReportedLessons = async () => {
-     const res = await fetch(`http://localhost:5000/api/lessons/report`);
+     const res = await fetch(`https://daily-life-server.vercel.app/api/lessons/report`);
      return res.json();
 }
