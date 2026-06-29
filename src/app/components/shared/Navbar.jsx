@@ -20,7 +20,6 @@ export default function Navbar() {
 
      const session = sessionData?.session;
      const user = sessionData?.user;
-     console.log(user)
 
      const isLoggedIn = !!session && !!user;
 

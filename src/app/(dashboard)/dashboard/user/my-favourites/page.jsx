@@ -4,14 +4,11 @@ import { getUserSession } from "@/lib/core/session";
 export default async function MyFavouritesPage() {
      const session = await getUserSession();
      const userId = session?.id || session?._id;
-     console.log("userId:", userId);
-     console.log("session:", JSON.stringify(session));
 
 
      const res = await fetch(`https://daily-life-server.vercel.app/api/lessons/saved/${userId}`);
 
      const { data: savedLessons } = await res.json();
-     console.log(savedLessons);
 
      return (
           <div className="w-full space-y-6">

@@ -50,7 +50,6 @@ export default function ProfilePage() {
                     setUserLessons(lessons || []);
                     const savedLessons = await getSavedLessons(creatorId);
                     setSavedLessons(savedLessons || []);
-                    console.log("savedLessons:", savedLessons);
                } catch (error) {
                     console.error("Failed to fetch lessons:", error);
                } finally {

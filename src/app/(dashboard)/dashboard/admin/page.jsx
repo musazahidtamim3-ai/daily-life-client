@@ -12,7 +12,6 @@ import { getLessons, getReportedLessons } from '@/lib/actions/get/lessons';
 export default async function AdminDashboardHome() {
 
      const users = await getUsers() || [];
-     console.log("users:", users);
      const lessons = await getLessons() || [];
      const publicLessons = lessons.data.filter(l => l.visibility === 'public');
      const reportedLessons = await getReportedLessons();

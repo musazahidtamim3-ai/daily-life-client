@@ -40,7 +40,6 @@ export default async function MostSavedLessons() {
                          {lessons.map((lesson, index) => {
                               const config = rankConfig[index];
                               const savesCount = lesson.saves?.length || 0;
-                              console.log(lesson.imageUrl)
 
                               return (
                                    <div

@@ -29,7 +29,6 @@ export default async function Success({ searchParams }) {
           }
 
           const result = await createSubscription(subsInfo);
-          console.log("Subscription result:", result);
      }
 
      return (
