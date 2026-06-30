@@ -9,17 +9,36 @@ import AdminCharts from '@/app/components/AdminCharts';
 import { getUsers } from '@/lib/actions/get/users';
 import { getLessons, getReportedLessons } from '@/lib/actions/get/lessons';
 
+export const dynamic = "force-dynamic";
+
+async function safeFetchJson(url, fallback) {
+     try {
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) {
+               console.error(`Fetch failed for ${url}: ${res.status}`);
+               return fallback;
+          }
+          return await res.json();
+     } catch (err) {
+          console.error(`Fetch error for ${url}:`, err.message);
+          return fallback;
+     }
+}
+
 export default async function AdminDashboardHome() {
+
+     const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL;
 
      const users = await getUsers() || [];
      const lessons = await getLessons() || [];
-     const publicLessons = lessons.data.filter(l => l.visibility === 'public');
-     const reportedLessons = await getReportedLessons();
-     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/lessons/today`);
-     const { data: todayLessons } = await res.json();
+     const publicLessons = lessons.data?.filter(l => l.visibility === 'public') || [];
+     const reportedLessons = await getReportedLessons() || [];
 
-     const res2 = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/growth`);
-     const { data: growthData } = await res2.json();
+     const todayRes = await safeFetchJson(`${baseUrl}/api/lessons/today`, { data: [] });
+     const todayLessons = todayRes.data || [];
+
+     const growthRes = await safeFetchJson(`${baseUrl}/api/stats/growth`, { data: [] });
+     const growthData = growthRes.data || [];
 
      const stats = [
           { title: 'Total Users', value: users.length, icon: <Persons className="w-5 h-5 text-blue-500" /> },
