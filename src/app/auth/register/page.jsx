@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Eye, EyeSlash, Sparkles } from "@gravity-ui/icons";
 import { signUp, signIn } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function SignupPage() {
+function SignupForm() {
      const [name, setName] = useState("");
      const [email, setEmail] = useState("");
      const [photoUrl, setPhotoUrl] = useState("");
@@ -94,7 +94,6 @@ export default function SignupPage() {
 
                     <div className="bg-gradient-to-b from-zinc-900/60 to-[#06070b]/95 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl backdrop-blur-2xl">
 
-                         {/* Header */}
                          <div className="text-center mb-8">
                               <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 mb-4">
                                    <span className="text-2xl"><Sparkles className="w-6 h-6 text-purple-500" /></span>
@@ -105,7 +104,6 @@ export default function SignupPage() {
                               <p className="text-xs text-zinc-500 mt-1.5">Fill in the fields below to get started</p>
                          </div>
 
-                         {/* Alerts */}
                          {error && (
                               <div className="mb-5 p-3.5 text-xs font-medium rounded-xl bg-red-500/10 border border-red-500/20 text-red-400">
                                    {error}
@@ -119,7 +117,6 @@ export default function SignupPage() {
 
                          <form onSubmit={handleSignup} className="flex flex-col gap-4">
 
-                              {/* Name */}
                               <div className="flex flex-col gap-1.5">
                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Full Name</label>
                                    <input
@@ -132,7 +129,6 @@ export default function SignupPage() {
                                    />
                               </div>
 
-                              {/* Email */}
                               <div className="flex flex-col gap-1.5">
                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Email Address</label>
                                    <input
@@ -145,7 +141,6 @@ export default function SignupPage() {
                                    />
                               </div>
 
-                              {/* Photo URL */}
                               <div className="flex flex-col gap-1.5">
                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                                         Photo URL <span className="text-zinc-700 font-normal normal-case">(optional)</span>
@@ -159,7 +154,6 @@ export default function SignupPage() {
                                    />
                               </div>
 
-                              {/* Password */}
                               <div className="flex flex-col gap-1.5">
                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Password</label>
                                    <div className="relative">
@@ -172,10 +166,10 @@ export default function SignupPage() {
                                              onFocus={() => setPasswordFocused(true)}
                                              onBlur={() => setPasswordFocused(false)}
                                              className={`w-full bg-zinc-900/80 border hover:border-zinc-700 focus:ring-2 focus:ring-indigo-500/15 rounded-xl px-4 py-3 pr-11 text-sm text-white placeholder-zinc-600 outline-none transition-all duration-200 ${password.length > 0
-                                                       ? allRulesPassed
-                                                            ? 'border-emerald-500/50 focus:border-emerald-500'
-                                                            : 'border-red-500/40 focus:border-red-500/60'
-                                                       : 'border-zinc-800 focus:border-indigo-500'
+                                                  ? allRulesPassed
+                                                       ? 'border-emerald-500/50 focus:border-emerald-500'
+                                                       : 'border-red-500/40 focus:border-red-500/60'
+                                                  : 'border-zinc-800 focus:border-indigo-500'
                                                   }`}
                                         />
                                         <button
@@ -187,7 +181,6 @@ export default function SignupPage() {
                                         </button>
                                    </div>
 
-                                   {/* Password Rules */}
                                    {(passwordFocused || password.length > 0) && (
                                         <div className="mt-2 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800/60 space-y-2">
                                              {passwordRules.map((rule, i) => {
@@ -195,8 +188,8 @@ export default function SignupPage() {
                                                   return (
                                                        <div key={i} className="flex items-center gap-2">
                                                             <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${passed
-                                                                      ? 'bg-emerald-500/20 border border-emerald-500/40'
-                                                                      : 'bg-zinc-800 border border-zinc-700'
+                                                                 ? 'bg-emerald-500/20 border border-emerald-500/40'
+                                                                 : 'bg-zinc-800 border border-zinc-700'
                                                                  }`}>
                                                                  {passed ? (
                                                                       <svg className="w-2.5 h-2.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -219,7 +212,6 @@ export default function SignupPage() {
                                    )}
                               </div>
 
-                              {/* Submit */}
                               <button
                                    type="submit"
                                    disabled={isLoading}
@@ -236,14 +228,12 @@ export default function SignupPage() {
                                    ) : "Sign Up"}
                               </button>
 
-                              {/* Divider */}
                               <div className="relative flex items-center py-1">
                                    <div className="flex-grow border-t border-zinc-800/60" />
                                    <span className="mx-4 text-[10px] font-bold text-zinc-600 uppercase tracking-widest">or continue with</span>
                                    <div className="flex-grow border-t border-zinc-800/60" />
                               </div>
 
-                              {/* Google */}
                               <button
                                    type="button"
                                    onClick={handleGoogleSignup}
@@ -258,7 +248,6 @@ export default function SignupPage() {
                                    Continue with Google
                               </button>
 
-                              {/* Footer */}
                               <p className="text-center text-xs text-zinc-500 pt-1">
                                    Already have an account?{" "}
                                    <Link
@@ -273,5 +262,13 @@ export default function SignupPage() {
                     </div>
                </div>
           </main>
+     );
+}
+
+export default function SignupPage() {
+     return (
+          <Suspense fallback={null}>
+               <SignupForm />
+          </Suspense>
      );
 }

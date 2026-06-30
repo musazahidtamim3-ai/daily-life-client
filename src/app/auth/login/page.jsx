@@ -184,7 +184,7 @@ function LoginForm() {
                                         href={`/auth/register?redirect=${redirectTo}`}
                                         className="font-bold text-indigo-400 hover:text-purple-400 transition-colors underline underline-offset-4 decoration-indigo-500/30"
                                    >
-                                        Create one here
+                                        Create new account here
                                    </Link>
                               </p>
 
