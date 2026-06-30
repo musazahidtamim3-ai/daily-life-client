@@ -6,53 +6,33 @@ import { Check, Xmark, CrownDiamond, ShieldCheck, Star, CirclePlus } from '@grav
 const PricingPage = () => {
      const [loading, setLoading] = useState(false);
      const handleCheckout = async (e) => {
-
           e.preventDefault();
-
           setLoading(true);
 
           try {
-
-               const response = await fetch("https://daily-life-server.vercel.app/api/checkout_sessions", {
-
+               const response = await fetch("/api/checkout_sessions", {
                     method: "POST",
-
                     headers: {
-
                          "Content-Type": "application/json",
-
                     },
-
                     body: JSON.stringify({ planId: "premium" }),
-
                     credentials: "include",
-
                });
 
                const data = await response.json();
 
                if (data.url) {
-
                     window.location.href = data.url;
-
                } else {
-
                     alert(data.error || "Something went wrong during checkout.");
-
                }
 
           } catch (err) {
-
                console.error(err);
-
                alert("Failed to initiate payment.");
-
           } finally {
-
                setLoading(false);
-
           }
-
      };
 
      const comparisonFeatures = [

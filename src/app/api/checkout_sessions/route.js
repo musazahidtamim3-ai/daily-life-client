@@ -14,8 +14,8 @@ export async function POST(request) {
                return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
           }
 
-          const formData = await request.formData()
-          const planId = formData.get('planId')
+          const body = await request.json()
+          const planId = body.planId
           const priceId = PLAN_PRICE_ID[planId] || PLAN_PRICE_ID['premium']
 
           const session = await stripe.checkout.sessions.create({
@@ -29,7 +29,7 @@ export async function POST(request) {
                mode: 'payment',
                metadata: {
                     planId,
-                    userEmail: user.email ,
+                    userEmail: user.email,
                },
                success_url: `${origin}/pricing/success?session_id={CHECKOUT_SESSION_ID}`,
                cancel_url: `${origin}/pricing`,
@@ -38,6 +38,7 @@ export async function POST(request) {
           return NextResponse.json({ url: session.url })
 
      } catch (err) {
+          console.error("Checkout session error:", err.message);
           return NextResponse.json(
                { error: err.message },
                { status: err.statusCode || 500 }
