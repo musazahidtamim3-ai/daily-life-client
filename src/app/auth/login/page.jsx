@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Eye, EyeSlash } from "@gravity-ui/icons";
 import { authClient } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "react-toastify";
 
-export default function LoginPage() {
+function LoginForm() {
      const router = useRouter();
      const searchParams = useSearchParams();
      const redirectTo = searchParams.get("redirect") || "/";
@@ -70,18 +70,15 @@ export default function LoginPage() {
      return (
           <main className="relative min-h-screen bg-[#030305] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
 
-               {/* Background glows */}
                <div className="absolute top-[-15%] left-[-15%] w-[550px] h-[550px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none" />
                <div className="absolute bottom-[-20%] right-[-15%] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[150px] pointer-events-none" />
 
                <div className="relative w-full max-w-2xl">
 
-                    {/* Top accent line */}
                     <div className="absolute top-0 inset-x-16 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent rounded-full" />
 
                     <div className="bg-gradient-to-b from-zinc-900/60 to-[#06070b]/95 border border-zinc-800/60 rounded-3xl p-8 shadow-2xl backdrop-blur-2xl">
 
-                         {/* Header */}
                          <div className="text-center mb-8">
                               <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 mb-4">
                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-indigo-400">
@@ -94,7 +91,6 @@ export default function LoginPage() {
                               <p className="text-xs text-zinc-500 mt-1.5">Sign in to access your life lessons</p>
                          </div>
 
-                         {/* Error */}
                          {error && (
                               <div className="mb-5 p-3.5 text-xs font-medium rounded-xl bg-red-500/10 border border-red-500/20 text-red-400">
                                    {error}
@@ -103,7 +99,6 @@ export default function LoginPage() {
 
                          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-                              {/* Email */}
                               <div className="flex flex-col gap-1.5">
                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Email Address</label>
                                    <input
@@ -116,7 +111,6 @@ export default function LoginPage() {
                                    />
                               </div>
 
-                              {/* Password */}
                               <div className="flex flex-col gap-1.5">
                                    <div className="flex items-center justify-between">
                                         <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Password</label>
@@ -140,7 +134,6 @@ export default function LoginPage() {
                                    </div>
                               </div>
 
-                              {/* Submit */}
                               <button
                                    type="submit"
                                    disabled={isLoading}
@@ -157,14 +150,12 @@ export default function LoginPage() {
                                    ) : "Login"}
                               </button>
 
-                              {/* Divider */}
                               <div className="relative flex items-center py-1">
                                    <div className="flex-grow border-t border-zinc-800/60" />
                                    <span className="mx-4 text-[10px] font-bold text-zinc-600 uppercase tracking-widest">or continue with</span>
                                    <div className="flex-grow border-t border-zinc-800/60" />
                               </div>
 
-                              {/* Google */}
                               <button
                                    type="button"
                                    onClick={handleGoogleLogin}
@@ -187,7 +178,6 @@ export default function LoginPage() {
                                    {isGoogleLoading ? "Connecting..." : "Continue with Google"}
                               </button>
 
-                              {/* Footer */}
                               <p className="text-center text-xs text-zinc-500 pt-1">
                                    Don&apos;t have an account?{" "}
                                    <Link
@@ -202,5 +192,13 @@ export default function LoginPage() {
                     </div>
                </div>
           </main>
+     );
+}
+
+export default function LoginPage() {
+     return (
+          <Suspense fallback={null}>
+               <LoginForm />
+          </Suspense>
      );
 }
