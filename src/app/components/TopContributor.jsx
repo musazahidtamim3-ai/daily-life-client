@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { MagicWand } from "@gravity-ui/icons";
 
 export default function TopContributors() {
@@ -30,22 +31,48 @@ export default function TopContributors() {
           return "bg-zinc-900 text-zinc-500 border-zinc-800";
      };
 
+     const containerVariants = {
+          hidden: {},
+          visible: {
+               transition: {
+                    staggerChildren: 0.1,
+               },
+          },
+     };
+
+     const itemVariants = {
+          hidden: { opacity: 0, y: 16 },
+          visible: {
+               opacity: 1,
+               y: 0,
+               transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+          },
+     };
+
      return (
           <div className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
                <h2 className="text-xl font-black text-white tracking-tight mb-5 flex items-center gap-2">
                     <MagicWand className="w-5 h-5 text-amber-600" /> Top Contributors
                </h2>
 
-               <div className="space-y-3">
+               <motion.div
+                    className="space-y-3"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+               >
                     {contributors.map((user, index) => (
-                         <div
+                         <motion.div
                               key={user.creatorId}
+                              variants={itemVariants}
+                              whileHover={{ scale: 1.015, x: 4 }}
+                              transition={{ type: "spring", stiffness: 280, damping: 22 }}
                               className="flex justify-between items-center p-3.5 bg-zinc-900/50 border border-zinc-800/60 rounded-xl hover:border-zinc-700 transition"
                          >
                               <div className="flex items-center gap-3">
                                    <div className="relative w-10 h-10 rounded-full overflow-hidden bg-zinc-800 shrink-0 border border-zinc-700">
                                         <Image
-                                             src={user.image || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"} 
+                                             src={user.image || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"}
                                              alt={user.name || "User"}
                                              fill
                                              className="object-cover"
@@ -71,9 +98,9 @@ export default function TopContributors() {
                                         Lessons
                                    </span>
                               </div>
-                         </div>
+                         </motion.div>
                     ))}
-               </div>
+               </motion.div>
           </div>
      );
 }

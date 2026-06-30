@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 
 export default function BenefitsSection() {
      const benefits = [
@@ -42,16 +43,38 @@ export default function BenefitsSection() {
           },
      ];
 
+     const containerVariants = {
+          hidden: {},
+          visible: {
+               transition: {
+                    staggerChildren: 0.15,
+               },
+          },
+     };
+
+     const cardVariants = {
+          hidden: { opacity: 0, y: 28 },
+          visible: {
+               opacity: 1,
+               y: 0,
+               transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+          },
+     };
+
      return (
           <section className="relative w-full bg-[#040406] py-24 px-4 overflow-hidden">
 
-               {/* ব্যাকগ্রাউন্ড গ্লো */}
                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[300px] bg-purple-900/5 blur-[140px] rounded-full pointer-events-none z-0" />
 
                <div className="max-w-7xl mx-auto relative z-10">
 
-                    {/* সেকশন হেডার */}
-                    <div className="text-center space-y-3 mb-20">
+                    <motion.div
+                         initial={{ opacity: 0, y: 16 }}
+                         whileInView={{ opacity: 1, y: 0 }}
+                         viewport={{ once: true, amount: 0.4 }}
+                         transition={{ duration: 0.6, ease: "easeOut" }}
+                         className="text-center space-y-3 mb-20"
+                    >
                          <div className="flex items-center justify-center gap-3">
                               <span className="hidden sm:inline-block text-purple-500/40 text-xl tracking-widest">✦ ──</span>
                               <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-white">
@@ -62,24 +85,30 @@ export default function BenefitsSection() {
                          <p className="text-sm sm:text-base text-neutral-400 font-medium max-w-2xl mx-auto">
                               Every lesson shapes a better you. Here&apos;s why preserving wisdom is life-changing.
                          </p>
-                    </div>
+                    </motion.div>
 
-                    {/* বেনিফিট কার্ডস গ্রিড */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <motion.div
+                         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+                         variants={containerVariants}
+                         initial="hidden"
+                         whileInView="visible"
+                         viewport={{ once: true, amount: 0.2 }}
+                    >
                          {benefits.map((item, index) => (
-                              <article
+                              <motion.article
                                    key={index}
+                                   variants={cardVariants}
+                                   whileHover={{ y: -6 }}
+                                   transition={{ type: "spring", stiffness: 260, damping: 20 }}
                                    className="group relative rounded-2xl border border-neutral-800/80 bg-neutral-950/40 backdrop-blur-md p-6 pt-12 text-center transition-all duration-500 shadow-[0_0_15px_rgba(168,85,247,0.02)] hover:border-purple-500/40 hover:bg-neutral-900/30 hover:shadow-[0_0_35px_rgba(168,85,247,0.12)] flex flex-col items-center"
                               >
 
-                                   {/* ফ্লোটিং আইকন বক্সের চারপাশেও নিওন গ্লো */}
                                    <div className="absolute top-0 -translate-y-1/2 w-14 h-14 rounded-full bg-linear-to-b from-purple-500 to-indigo-600 p-px shadow-[0_0_15px_rgba(147,51,234,0.3)] group-hover:shadow-[0_0_22px_rgba(147,51,234,0.6)] transition-all duration-500 group-hover:scale-105">
                                         <div className="w-full h-full rounded-full bg-[#0d0b14] flex items-center justify-center">
                                              {item.icon}
                                         </div>
                                    </div>
 
-                                   {/* কন্টেন্ট */}
                                    <div className="space-y-3 mt-2 flex-1 flex flex-col justify-between">
                                         <h3 className="text-base sm:text-lg font-semibold text-amber-400/90 tracking-wide transition-colors duration-300 group-hover:text-amber-400">
                                              {item.title}
@@ -89,12 +118,11 @@ export default function BenefitsSection() {
                                         </p>
                                    </div>
 
-                                   {/* কার্ডের নিচে একটি ছোট ইন্টারনাল লাইট স্ট্রিপ গ্লো (Extra Touch) */}
                                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-purple-500/0 to-transparent group-hover:via-purple-500/40 transition-all duration-700" />
 
-                              </article>
+                              </motion.article>
                          ))}
-                    </div>
+                    </motion.div>
 
                </div>
           </section>
